@@ -1,5 +1,13 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Vehicle Rental Application Project by PPPL Group 6
+- Fernandio Farrel Putra Susilo (5026221102)
+- Faiz Musyaffa Ramadhan (5026221153)
+- Mohammad Geresidi Rachmadi (5026221163)
+- Satria Jati Kusuma (5026221165)
+- Muhammad Irsyad Fahmi (5026221187)
+
+
 ## Getting Started
 
 First, run the development server:
