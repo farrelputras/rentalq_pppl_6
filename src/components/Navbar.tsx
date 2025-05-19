@@ -26,7 +26,7 @@ export default function Navbar() {
       <Link href="/profile" className="flex items-center gap-2 text-white hover:underline">
         <span>Cynthia</span>
         <Image
-          src="/profile.jpg"
+          src="/profile.svg"
           alt="Profile"
           width={32}
           height={32}
