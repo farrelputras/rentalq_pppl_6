@@ -2,7 +2,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { Poppins } from 'next/font/google';
-import Navbar from '@/components/Navbar';
+// import Navbar from '@/components/Navbar';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={poppins.variable}>
       <body className="bg-[#E6EEF7] font-sans">
-        <Navbar />
+        {/* <Navbar /> */}
         <main>{children}</main>
       </body>
     </html>
