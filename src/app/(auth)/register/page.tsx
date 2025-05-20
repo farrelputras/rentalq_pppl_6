@@ -4,8 +4,9 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   return (
     <div className="flex min-h-screen">
@@ -16,23 +17,37 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right half — langsung jadi card */}
+      {/* Right half */}
       <div className="w-1/2 bg-white rounded-l-[3rem] shadow-lg flex items-center justify-center p-10">
         <div className="w-full max-w-lg">
-          <h2 className="text-3xl font-bold text-blue-600">Selamat Datang Kembali,</h2>
-          <p className="mt-2 text-gray-500">Log in sekarang untuk lanjut</p>
+          <h2 className="text-3xl font-bold text-blue-600">Buat Akun Baru</h2>
+          <p className="mt-2 text-gray-500">Lengkapi data berikut untuk mendaftar</p>
 
           <form className="mt-8 space-y-6">
+            {/* Nama Lengkap */}
+            <div>
+              <label htmlFor="fullname" className="block text-sm font-medium text-gray-700">
+                Nama Lengkap
+              </label>
+              <input
+                id="fullname"
+                type="text"
+                required
+                placeholder="Nama lengkap Anda"
+                className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                Email
               </label>
               <input
                 id="email"
                 type="email"
                 required
-                placeholder="Your email address"
+                placeholder="Alamat email Anda"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
@@ -46,7 +61,7 @@ export default function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 required
-                placeholder="Your password"
+                placeholder="Password"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
               />
               <button
@@ -58,11 +73,25 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Forgot Password */}
-            <div className="text-right">
-              <a href="#" className="text-sm text-blue-600 hover:underline">
-                Forgot Password?
-              </a>
+            {/* Konfirmasi Password */}
+            <div className="relative">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Konfirmasi Password
+              </label>
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                required
+                placeholder="Ulangi password"
+                className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+              >
+                {showConfirmPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
             </div>
 
             {/* Submit */}
@@ -70,14 +99,14 @@ export default function LoginPage() {
               type="submit"
               className="w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
             >
-              Login
+              Daftar
             </button>
           </form>
 
           <p className="mt-6 text-center text-gray-600">
-            Belum memiliki akun?{' '}
-            <a href="#" className="font-medium text-blue-600 hover:underline">
-              Daftar disini
+            Sudah punya akun?{' '}
+            <a href="/login" className="font-medium text-blue-600 hover:underline">
+              Masuk di sini
             </a>
           </p>
         </div>
