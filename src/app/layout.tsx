@@ -1,3 +1,4 @@
+// src/app/layout.tsx
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
@@ -6,7 +7,7 @@ import Navbar from '@/components/Navbar';
 
 const poppins = Poppins({
   subsets: ['latin'],
-  weight: ['400', '600'], // Add other weights as needed
+  weight: ['400', '600'],
   variable: '--font-poppins',
   display: 'swap',
 });
@@ -18,10 +19,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={poppins.variable}>
-      <body className="bg-[#E6EEF7] font-sans">
-        <Navbar />
-        <main>{children}</main>
+    <html lang="en" className={`h-full w-full ${poppins.variable}`}>
+      <body className="h-full w-full bg-white antialiased">
+        {children}
       </body>
     </html>
   );
