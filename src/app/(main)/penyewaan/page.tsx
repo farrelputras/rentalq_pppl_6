@@ -2,32 +2,14 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarIcon, Search } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem } from "@/components/ui/select";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import motorList from "@/app/data/motorlist"; // ← import dari file eksternal
 
 const RentalMotor = () => {
   const [selectedMotor, setSelectedMotor] = useState(null);
-
-  const motorList = [
-    {
-      name: "Honda BeAT All New 2025",
-      transmission: "Automatic",
-      cc: "110cc",
-      seats: "2 Seats",
-      price: "Rp50.000",
-      image: "/motor-beat.png"
-    },
-    {
-      name: "Honda Vario ABS 2025",
-      transmission: "Automatic",
-      cc: "160cc",
-      seats: "2 Seats",
-      price: "Rp75.000",
-      image: "/motor-vario.png"
-    }
-  ];
 
   return (
     <div className="p-4">
@@ -42,39 +24,28 @@ const RentalMotor = () => {
         </Button>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-center mb-4">
-        <Select>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Merk Motor" />
-          </SelectTrigger>
+      {/* Filter */}
+      <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10 mx-4">
+        <p className="text-md font-bold text-black-500">Filter: </p>
+        <Select placeholder="Merk Motor">
           <SelectContent>
             <SelectItem value="honda">Honda</SelectItem>
             <SelectItem value="yamaha">Yamaha</SelectItem>
           </SelectContent>
         </Select>
-        <Select>
-          <SelectTrigger className="w-[150px]">
-            <SelectValue placeholder="Tipe Motor" />
-          </SelectTrigger>
+        <Select placeholder="Tipe Motor">
           <SelectContent>
             <SelectItem value="matic">Matic</SelectItem>
             <SelectItem value="manual">Manual</SelectItem>
           </SelectContent>
         </Select>
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Jenis Mesin (CC)" />
-          </SelectTrigger>
+        <Select placeholder="Jenis Mesin (CC)">
           <SelectContent>
             <SelectItem value="110">110cc</SelectItem>
             <SelectItem value="160">160cc</SelectItem>
           </SelectContent>
         </Select>
-        <Select>
-          <SelectTrigger className="w-[120px] ml-auto">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
+        <Select placeholder="Sort By">
           <SelectContent>
             <SelectItem value="lowest">Lowest Price</SelectItem>
             <SelectItem value="highest">Highest Price</SelectItem>
@@ -100,7 +71,9 @@ const RentalMotor = () => {
             <div className="text-right">
               <p className="text-sm text-gray-500">Starts from</p>
               <p className="text-lg font-bold text-blue-600">{motor.price}<span className="text-sm text-gray-500"> /day</span></p>
-              <Button className="mt-2">Pilih</Button>
+              <Link href={`/penyewaan/${motor.id}`}>
+                <Button className="mt-2">Pilih</Button>
+              </Link>
             </div>
           </Card>
         ))}
@@ -108,9 +81,9 @@ const RentalMotor = () => {
 
       {/* Pagination */}
       <div className="flex justify-center items-center mt-6 gap-4">
-        <span className="text-gray-400">◀</span>
+        <span className="text-blue-400">◀</span>
         <span className="text-blue-600 font-bold">1</span>
-        <span className="text-gray-400">▶</span>
+        <span className="text-blue-400">▶</span>
       </div>
     </div>
   );

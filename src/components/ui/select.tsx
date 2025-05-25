@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { ChevronDown } from "lucide-react"; // pastikan sudah install lucide-react
 
 interface SelectProps {
   value?: string;
@@ -13,13 +14,15 @@ const Select: React.FC<SelectProps> = ({
   value,
   onChange,
   children,
-  placeholder = "Pilih opsi",
+  placeholder = "filter",
 }) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(value || "");
+  const [selectedLabel, setSelectedLabel] = useState("");
 
-  const handleSelect = (val: string) => {
+  const handleSelect = (val: string, label?: string) => {
     setSelected(val);
+    setSelectedLabel(label || val);
     onChange?.(val);
     setOpen(false);
   };
@@ -27,7 +30,9 @@ const Select: React.FC<SelectProps> = ({
   return (
     <div className="relative w-full max-w-xs">
       <SelectTrigger onClick={() => setOpen(!open)}>
-        <SelectValue value={selected} placeholder={placeholder} />
+        <SelectValue value={selectedLabel} placeholder={placeholder} />
+        <ChevronDown className="w-8 h-6 text-blue-500 ml-2"/>
+
       </SelectTrigger>
       {open && (
         <SelectContent>
@@ -47,19 +52,22 @@ const SelectTrigger: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => (
   <div
-    className="border border-gray-300 rounded-md px-4 py-2 cursor-pointer bg-white"
+    className="flex items-center justify-between border border-gray-300 rounded-full px-4 py-1.5 text-sm cursor-pointer bg-white w-full shadow-sm hover:shadow-md transition"
     {...props}
   >
     {children}
   </div>
 );
 
-// ✅ Diperbaiki: Gunakan value dan placeholder secara eksplisit
 const SelectValue: React.FC<{ value?: string; placeholder?: string }> = ({
   value,
   placeholder,
 }) => (
-  <span className={value ? "text-black" : "text-gray-400"}>
+  <span
+    className={`text-sm font-semibold ${
+      value ? "text-blue-600" : "text-blue-600 font-bold"
+    }`}
+  >
     {value && value !== "" ? value : placeholder}
   </span>
 );
@@ -78,19 +86,26 @@ const SelectContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
 
 interface SelectItemProps {
   value: string;
+  label?: string;
   children: React.ReactNode;
-  onSelect?: (value: string) => void;
+  onSelect?: (value: string, label?: string) => void;
 }
 
 const SelectItem: React.FC<SelectItemProps> = ({
   value,
+  label,
   children,
   onSelect,
 }) => {
+  const handleClick = () => {
+    const labelToUse = label || (typeof children === "string" ? children : "");
+    onSelect?.(value, labelToUse);
+  };
+
   return (
     <div
-      className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-      onClick={() => onSelect?.(value)}
+      className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+      onClick={handleClick}
     >
       {children}
     </div>
