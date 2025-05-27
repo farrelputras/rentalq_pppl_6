@@ -1,6 +1,6 @@
 // app/(main)/layout.tsx
 import { ReactNode } from "react";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavBar";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (

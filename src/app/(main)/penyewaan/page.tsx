@@ -1,29 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem } from "@/components/ui/select";
+import { Button } from "@/components/Button";
+import { Card } from "@/components/Card";
+import { Select, SelectContent, SelectItem } from "@/components/Select";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import SearchBar from "@/components/SearchBar";
 import motorList from "@/app/data/motorlist"; // ← import dari file eksternal
 
 const RentalMotor = () => {
   const [selectedMotor, setSelectedMotor] = useState(null);
 
   return (
-    <div className="p-4">
-      {/* Search Summary */}
-      <div className="bg-white shadow-md p-4 rounded-xl mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold">Rental Motor</h2>
-          <p className="text-sm text-gray-500">Thu, 17 April 2025, 10:00 WIB - Sun, 20 April 2025, 10:00 WIB</p>
-        </div>
-        <Button variant="outline" className="flex gap-2 items-center">
-          <Search size={16} /> Change Search
-        </Button>
-      </div>
-
+    <div className="w-full mt-10 mx-15 p-4">
+      <>
+      <SearchBar />
+      </>
+      
       {/* Filter */}
       <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10 mx-4">
         <p className="text-md font-bold text-black-500">Filter: </p>

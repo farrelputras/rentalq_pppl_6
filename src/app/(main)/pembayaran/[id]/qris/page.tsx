@@ -3,15 +3,15 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/Card";
+import { Button } from "@/components/Button";
 
 export default function BayarQRIS() {
   const router = useRouter();
 
   return (
     // Card
-    <Card className="w-full max-w rounded-xl bg-white mt-10 ml-15 mr-15 mb-8 px-10">
+    <Card className="w-full rounded-xl bg-white mt-10 ml-15 mr-15 mb-8 px-10">
       <CardContent>
         {/* Left Side */}
         <h1 className="text-2xl font-semibold mt-4 mb-8 text-black text-center">
