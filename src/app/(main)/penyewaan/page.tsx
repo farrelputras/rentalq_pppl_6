@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Select, SelectContent, SelectItem } from "@/components/Select";
@@ -15,9 +15,9 @@ const RentalMotor = () => {
   return (
     <div className="w-full mt-10 mx-15 p-4">
       <>
-      <SearchBar />
+        <SearchBar />
       </>
-      
+
       {/* Filter */}
       <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10 mx-4">
         <p className="text-md font-bold text-black-500">Filter: </p>
@@ -52,7 +52,11 @@ const RentalMotor = () => {
         {motorList.map((motor, index) => (
           <Card key={index} className="flex items-center justify-between p-4">
             <div className="flex items-center gap-4">
-              <img src={motor.image} alt={motor.name} className="w-24 h-20 object-cover rounded-lg" />
+              <img
+                src={motor.image}
+                alt={motor.name}
+                className="w-24 h-20 object-cover rounded-lg"
+              />
               <div>
                 <h3 className="font-semibold text-lg">{motor.name}</h3>
                 <div className="text-sm text-gray-600">
@@ -64,7 +68,10 @@ const RentalMotor = () => {
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-500">Starts from</p>
-              <p className="text-lg font-bold text-blue-600">{motor.price}<span className="text-sm text-gray-500"> /day</span></p>
+              <p className="text-lg font-bold text-blue-600">
+                {motor.price}
+                <span className="text-sm text-gray-500"> /day</span>
+              </p>
               <Link href={`/penyewaan/${motor.id}`}>
                 <Button className="mt-2">Pilih</Button>
               </Link>
