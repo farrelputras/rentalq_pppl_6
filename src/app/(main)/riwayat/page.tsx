@@ -40,7 +40,7 @@ export default function RiwayatPage() {
   );
 
   return (
-    <div className="p-4 md:p-6 font-[Poppins] min-h-screen min-w-screen bg-gray-100">
+    <div className="p-4 md:p-6 font-[Poppins] min-h-screen w-screen bg-gray-100">
       {/* Header */}
       <div className="bg-white shadow-md p-4 rounded-xl mb-4 flex items-center justify-between">
         <div>
