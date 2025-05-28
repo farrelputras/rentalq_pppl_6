@@ -28,7 +28,7 @@ const Select: React.FC<SelectProps> = ({
   };
 
   return (
-    <div className="relative w-full max-w-xs">
+    <div className="relative">
       <SelectTrigger onClick={() => setOpen(!open)}>
         <SelectValue value={selectedLabel} placeholder={placeholder} />
         <ChevronDown className="w-8 h-6 text-blue-500 ml-2"/>

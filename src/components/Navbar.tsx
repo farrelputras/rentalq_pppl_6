@@ -17,7 +17,7 @@ export default function Navbar() {
 
       {/* Middle: Navigation Links */}
       <div className="flex gap-6">
-        <Link href="/" className="text-white hover:underline">Home</Link>
+        <Link href="/home" className="text-white hover:underline">Home</Link>
         <Link href="/penyewaan" className="text-white hover:underline">Penyewaan</Link>
         <Link href="/riwayat" className="text-white hover:underline">Riwayat Pemesanan</Link>
       </div>

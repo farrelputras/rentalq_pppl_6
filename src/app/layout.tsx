@@ -3,7 +3,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import { Poppins } from 'next/font/google';
-import Navbar from '@/components/NavBar';
+import Navbar from '@/components/Navbar';
 
 const poppins = Poppins({
   subsets: ['latin'],

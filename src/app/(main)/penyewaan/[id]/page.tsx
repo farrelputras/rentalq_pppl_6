@@ -162,9 +162,12 @@ const RentalDetailPage = () => {
             </p>
           </div>
 
-          <button className="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition">
+          <Link
+            href={`/pembayaran/${id}`}
+            className="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-center block"
+          >
             Pesan
-          </button>
+          </Link>
         </div>
       </div>
     </main>
