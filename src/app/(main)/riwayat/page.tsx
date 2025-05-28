@@ -40,12 +40,7 @@ export default function RiwayatPage() {
   );
 
   return (
-<<<<<<< HEAD
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">Welcome to RentalQ</h1>
-      <p className="text-gray-700 mt-2">This is the history page.</p>
-=======
-    <div className="p-4 md:p-6 font-[Poppins] min-h-screen bg-gray-100">
+    <div className="p-4 md:p-6 font-[Poppins] min-h-screen min-w-screen bg-gray-100">
       {/* Header */}
       <div className="bg-white shadow-md p-4 rounded-xl mb-4 flex items-center justify-between">
         <div>
@@ -222,7 +217,6 @@ export default function RiwayatPage() {
           </div>
         </div>
       )}
->>>>>>> 9ec4b98 (WIP: Perubahan pada homepage dan riwayat pemesanan)
     </div>
   );
 }

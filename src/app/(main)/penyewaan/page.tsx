@@ -19,7 +19,7 @@ const RentalMotor = () => {
       </>
 
       {/* Filter */}
-      <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10 mx-4">
+      <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10">
         <p className="text-md font-bold text-black-500">Filter: </p>
         <Select placeholder="Merk Motor">
           <SelectContent>
