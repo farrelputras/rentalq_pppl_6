@@ -10,7 +10,7 @@ export default function Navbar() {
       style={{ background: 'linear-gradient(180deg, #002E63 0.31%, #005DC9 173.34%)' }}
     >
       {/* Left: Logo */}
-      <Link href="/" className="text-white text-xl font-bold flex items-center gap-2">
+      <Link href="/home" className="text-white text-xl font-bold flex items-center gap-2">
         <Image src="/logo.svg" alt="RentalQ Logo" width={28} height={28} />
         RentalQ
       </Link>

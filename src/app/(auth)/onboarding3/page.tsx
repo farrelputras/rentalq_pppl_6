@@ -10,9 +10,13 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center font-[Poppins]">
       {/* Logo */}
-      <div className="absolute top-6 left-6 z-50 flex items-center gap-2">
-        <Image src="/rentalq-icon-blue.svg" alt="RentalQ Logo" width={40} height={40} />
-        <span className="font-bold text-xl text-blue-900">RentalQ</span>
+      <div className="absolute top-6 left-6 z-50 flex items-center">
+        <Image
+          src="/logo_nyamping_blue.svg"
+          alt="RentalQ Logo"
+          width={120}
+          height={40}
+        />
       </div>
 
       {/* Video Modal */}
