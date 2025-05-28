@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
@@ -66,12 +67,13 @@ export default function LoginPage() {
             </div>
 
             {/* Submit */}
-            <button
-              type="submit"
-              className="w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
+            
+            <Link
+              href="/home"
+              className="block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
             >
               Login
-            </button>
+            </Link>
           </form>
 
           <p className="mt-6 text-center text-gray-600">

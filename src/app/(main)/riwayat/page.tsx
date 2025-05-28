@@ -115,7 +115,7 @@ export default function RiwayatPage() {
               <div className="flex gap-4">
                 <button
                   onClick={() => setSelectedBooking(b)}
-                  className="text-[#468BF2] text-base font-semibold px-4 py-2 rounded-md border border-[#468BF2]"
+                  className="text-[#468BF2] cursor-pointer text-base font-semibold px-4 py-2 rounded-md border border-[#468BF2] hover:bg-gray-100"
                 >
                   Details
                 </button>
@@ -137,7 +137,7 @@ export default function RiwayatPage() {
               <h2 className="text-white font-semibold text-base">Detail Transaksi</h2>
               <button
                 onClick={() => setSelectedBooking(null)}
-                className="text-white text-xl font-bold hover:opacity-80"
+                className="text-white cursor-pointer text-xl font-bold hover:opacity-80"
               >
                 ×
               </button>
@@ -208,7 +208,7 @@ export default function RiwayatPage() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setSelectedBooking(null)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-100"
+                  className="px-4 py-2 cursor-pointer border border-gray-300 rounded-md text-sm hover:bg-gray-100"
                 >
                   Tutup
                 </button>
