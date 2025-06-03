@@ -51,13 +51,13 @@ export default function HeroSection() {
           </p>
           <div className="flex gap-4">
             <Link href="/onboarding2">
-              <button className="w-48 h-12 bg-blue-700 text-white rounded-md text-sm font-bold hover:bg-blue-800 transition flex items-center justify-center">
+              <button className="cursor-pointer w-48 h-12 bg-blue-700 text-white rounded-md text-sm font-bold hover:bg-blue-800 transition flex items-center justify-center">
                 Mulai Sewa
               </button>
             </Link>
             <button
               onClick={() => setShowVideo(true)}
-              className="w-48 h-12 bg-blue-100 text-blue-900 rounded-md text-sm font-bold hover:bg-blue-200 transition flex items-center justify-center gap-2"
+              className="cursor-pointer w-48 h-12 bg-blue-100 text-blue-900 rounded-md text-sm font-bold hover:bg-blue-200 transition flex items-center justify-center gap-2"
             >
               1 Minute to Know <span className="text-lg">➔</span>
             </button>
