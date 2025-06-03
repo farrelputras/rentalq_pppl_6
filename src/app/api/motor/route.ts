@@ -16,6 +16,8 @@ export async function GET(req: NextRequest) {
     const cc = req.nextUrl.searchParams.get("cc");
     const sort = req.nextUrl.searchParams.get("sort");
 
+    console.log("Query params:", { merk, tipe, cc, sort });
+
     const connection = await mysql.createConnection(dbConfig);
 
     // Bangun query dasar
@@ -49,9 +51,9 @@ export async function GET(req: NextRequest) {
       params.push(cc);
     }
 
-    if (sort === "lowest") {
+    if (sort === "Lowest Price") {
       query += " ORDER BY hargaPerHari ASC";
-    } else if (sort === "highest") {
+    } else if (sort === "Highest Price") {
       query += " ORDER BY hargaPerHari DESC";
     }
 

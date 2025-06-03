@@ -24,10 +24,10 @@ const RentalMotor = () => {
   const [motorList, setMotorList] = useState<Motor[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filterMerk, setFilterMerk] = useState("");
-  const [filterTipe, setFilterTipe] = useState("");
-  const [filterCC, setFilterCC] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [filterMerk, setFilterMerk] = useState<string | undefined>(undefined);
+  const [filterTipe, setFilterTipe] = useState<string | undefined>(undefined);
+  const [filterCC, setFilterCC] = useState<string | undefined>(undefined);
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined);
 
 
   useEffect(() => {
@@ -76,13 +76,13 @@ const RentalMotor = () => {
       <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10">
         <p className="text-md font-bold text-black-500">Filter: </p>
         <Select placeholder="Merk Motor" value={filterMerk} onChange={setFilterMerk}>
-          <SelectItem value="honda">Honda</SelectItem>
-          <SelectItem value="yamaha">Yamaha</SelectItem>
+          <SelectItem value="Honda">Honda</SelectItem>
+          <SelectItem value="Yamaha">Yamaha</SelectItem>
         </Select>
         
-        <Select placeholder="Tipe Motor" value={filterTipe} onChange={setFilterTipe}>
-            <SelectItem value="matic">Matic</SelectItem>
-            <SelectItem value="manual">Manual</SelectItem>
+        <Select placeholder="Tipe Motor" value={filterTipe} onChange={setFilterTipe}> 
+            <SelectItem value="Matic">Matic</SelectItem>
+            <SelectItem value="Manual">Manual</SelectItem>
         </Select>
 
         <Select placeholder="Jenis Mesin (CC)" value={filterCC} onChange={setFilterCC}>
@@ -92,8 +92,8 @@ const RentalMotor = () => {
         </Select>
 
         <Select placeholder="Sort By" value={sortBy} onChange={setSortBy}>
-            <SelectItem value="lowest">Lowest Price</SelectItem>
-            <SelectItem value="highest">Highest Price</SelectItem>
+            <SelectItem value="Lowest Price">Lowest Price</SelectItem>
+            <SelectItem value="Highest Price">Highest Price</SelectItem>
         </Select>
 
         {/* Tambahkan Button reset filter di sini */}
@@ -101,10 +101,10 @@ const RentalMotor = () => {
           variant="outline"
           className="text-sm ml-auto text-red-600 border-red-600 hover:bg-red-100 rounded-full"
           onClick={() => {
-            setFilterMerk("");
-            setFilterTipe("");
-            setFilterCC("");
-            setSortBy("");
+            setFilterMerk(undefined);
+            setFilterTipe(undefined);
+            setFilterCC(undefined);
+            setSortBy(undefined);
           }}
         >
           Reset Filter
