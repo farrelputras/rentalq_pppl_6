@@ -1,12 +1,40 @@
 'use client'
 
-import Link from 'next/link';
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
 export default function LoginPage() {
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setErrorMsg('')
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const result = await res.json()
+
+      if (!res.ok) {
+        throw new Error(result.message || 'Login gagal')
+      }
+
+      // Jika berhasil, redirect ke /home
+      router.push('/home')
+    } catch (err: any) {
+      // Beri tipe 'any' pada err agar tidak dianggap unknown
+      setErrorMsg(err.message || 'Terjadi kesalahan saat login.')
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -17,13 +45,13 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right half — langsung jadi card */}
+      {/* Right half */}
       <div className="w-1/2 bg-white rounded-l-[3rem] shadow-lg flex items-center justify-center p-10">
         <div className="w-full max-w-lg">
           <h2 className="text-3xl font-bold text-blue-600">Selamat Datang Kembali,</h2>
           <p className="mt-2 text-gray-500">Log in sekarang untuk lanjut</p>
 
-          <form className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -33,6 +61,8 @@ export default function LoginPage() {
                 id="email"
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -47,6 +77,8 @@ export default function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Your password"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -59,6 +91,11 @@ export default function LoginPage() {
               </button>
             </div>
 
+            {/* Tampilkan error jika ada */}
+            {errorMsg && (
+              <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
+            )}
+
             {/* Forgot Password */}
             <div className="text-right">
               <a href="#" className="text-sm text-blue-600 hover:underline">
@@ -67,19 +104,18 @@ export default function LoginPage() {
             </div>
 
             {/* Submit */}
-            
-            <Link
-              href="/home"
+            <button
+              type="submit"
               className="block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
             >
               Login
-            </Link>
+            </button>
           </form>
 
           <p className="mt-6 text-center text-gray-600">
             Belum memiliki akun?{' '}
             <a href="/register" className="font-medium text-blue-600 hover:underline">
-              Daftar disini
+              Daftar di sini
             </a>
           </p>
         </div>
