@@ -125,7 +125,7 @@ export default function HomePage() {
       {/* Apa Kata Mereka */}
       <div>
         <h2
-          className="mb-4"
+          className="mb-4 justify-items-center" 
           style={{
             color: '#0C59B3',
             fontFamily: 'Poppins',
@@ -136,37 +136,37 @@ export default function HomePage() {
         >
           Apa Kata Mereka?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {(['Alka', 'Dia', 'Lily', 'Yere'] as const).map((name) => (
-            <Card
-              key={name}
-              className="text-center"
-              style={{
-                width: '415px',
-                height: '140px',
-                borderRadius: '17px',
-                background: '#468BF2',
-                color: 'white',
-              }}
-            >
-              <div className="flex h-full items-center gap-4 p-3">
-                <div className="flex flex-col items-center min-w-[100px]">
-                  <Image
-                    src={`/${name}_PP.svg`}
-                    alt={name}
-                    width={80}
-                    height={80}
-                    className="rounded-full"
-                  />
-                  <h4 className="mt-2 font-bold text-lg">{name}</h4>
-                </div>
-                <p className="flex-grow text-sm leading-relaxed text-justify">
-                  {testimonials[name]}
-                </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
+        {(['Alka', 'Dia', 'Lily', 'Yere'] as const).map((name) => (
+          <Card
+            key={name}
+            className="text-center w-full max-w-[415px]"
+            style={{
+              height: '140px',
+              borderRadius: '17px',
+              background: '#468BF2',
+              color: 'white',
+            }}
+          >
+            <div className="flex h-full items-center gap-4 p-3">
+              <div className="flex flex-col items-center min-w-[100px]">
+                <Image
+                  src={`/${name}_PP.svg`}
+                  alt={name}
+                  width={80}
+                  height={80}
+                  className="rounded-full"
+                />
+                <h4 className="mt-2 font-bold text-lg">{name}</h4>
               </div>
-            </Card>
-          ))}
-        </div>
+              <p className="flex-grow text-sm leading-relaxed text-justify">
+                {testimonials[name]}
+              </p>
+            </div>
+          </Card>
+        ))}
+      </div>
+
       </div>
 
       {/* Teks dan Logo di bawah */}
