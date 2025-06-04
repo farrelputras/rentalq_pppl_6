@@ -140,7 +140,7 @@ export default function RegisterPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
+              className="cursor-pointer w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
             >
               Daftar
             </button>

@@ -106,7 +106,7 @@ export default function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
+              className="cursor-pointer block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
             >
               Login
             </button>
