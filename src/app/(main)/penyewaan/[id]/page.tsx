@@ -73,7 +73,7 @@ export default function DetailMotorPage() {
                   <div className="flex gap-4 text-lg mt-2 text-black font-bold">
                     <span>🛵 {motor.transmission}</span>
                     <span>⚙️ {motor.cc}</span>
-                    <span>🪑 2 seats</span>
+                    <span>🪪 {motor.nopol}</span>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {["Anti Theft Alarm", "12L Baggages", "LED Headlights"].map(
