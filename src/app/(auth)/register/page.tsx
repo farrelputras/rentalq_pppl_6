@@ -103,7 +103,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                className="absolute top-1/2 right-3 text-gray-500"
               >
                 {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-3 flex items-center text-gray-500"
+                className="absolute top-1/2 right-3 text-gray-500"
               >
                 {showConfirmPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
@@ -140,7 +140,7 @@ export default function RegisterPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
+              className="cursor-pointer w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
             >
               Daftar
             </button>
