@@ -2,11 +2,41 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 
 export default function RegisterPage() {
+  const router = useRouter()
+  const [fullname, setFullname] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setErrorMsg('')
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullname, email, password, confirmPassword }),
+      })
+      const result = await res.json()
+
+      if (!res.ok) {
+        throw new Error(result.message || 'Registrasi gagal')
+      }
+
+      // Jika registasi berhasil, redirect misalnya ke /login
+      router.push('/login')
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Terjadi kesalahan saat registrasi.')
+    }
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -23,7 +53,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-bold text-blue-600">Buat Akun Baru</h2>
           <p className="mt-2 text-gray-500">Lengkapi data berikut untuk mendaftar</p>
 
-          <form className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Nama Lengkap */}
             <div>
               <label htmlFor="fullname" className="block text-sm font-medium text-gray-700">
@@ -33,6 +63,8 @@ export default function RegisterPage() {
                 id="fullname"
                 type="text"
                 required
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
                 placeholder="Nama lengkap Anda"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -47,6 +79,8 @@ export default function RegisterPage() {
                 id="email"
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Alamat email Anda"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -61,6 +95,8 @@ export default function RegisterPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -82,6 +118,8 @@ export default function RegisterPage() {
                 id="confirmPassword"
                 type={showConfirmPassword ? 'text' : 'password'}
                 required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Ulangi password"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
               />
@@ -93,6 +131,11 @@ export default function RegisterPage() {
                 {showConfirmPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
             </div>
+
+            {/* Tampilkan error jika ada */}
+            {errorMsg && (
+              <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
+            )}
 
             {/* Submit */}
             <button

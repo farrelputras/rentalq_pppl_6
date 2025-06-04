@@ -21,14 +21,6 @@ interface UserRow extends RowDataPacket {
 
 export async function POST(req: NextRequest) {
   try {
-    // DEBUG: Tampilkan nilai environment variables
-    console.log('--- DEBUG ENV ---')
-    console.log('DB_HOST       =', process.env.DB_HOST)
-    console.log('DB_PORT       =', process.env.DB_PORT)
-    console.log('DB_USER       =', process.env.DB_USER)
-    console.log('DB_PASSWORD   =', process.env.DB_PASSWORD ? '<<terisi>>' : '<<KOSONG>>')
-    console.log('DB_NAME       =', process.env.DB_NAME)
-    console.log('-----------------')
 
     // 1) Ambil body JSON (email & password)
     const { email, password } = (await req.json()) as {
