@@ -11,12 +11,13 @@ const dbConfig = {
 
 export async function GET(req: NextRequest) {
   try {
+    const id = req.nextUrl.searchParams.get("id");
     const merk = req.nextUrl.searchParams.get("merk");
     const tipe = req.nextUrl.searchParams.get("tipe");
     const cc = req.nextUrl.searchParams.get("cc");
     const sort = req.nextUrl.searchParams.get("sort");
 
-    console.log("Query params:", { merk, tipe, cc, sort });
+    console.log("Query params:", { id, merk, tipe, cc, sort });
 
     const connection = await mysql.createConnection(dbConfig);
 
@@ -33,28 +34,32 @@ export async function GET(req: NextRequest) {
       FROM kendaraan
       WHERE ketersediaan = 1
     `;
-
     const params: any[] = [];
 
-    if (merk) {
-      query += " AND namaKendaraan LIKE ?";
-      params.push(`%${merk}%`);
-    }
+    if (id) {
+      query += " AND idKendaraan = ?";
+      params.push(id);
+    } else {
+      if (merk) {
+        query += " AND namaKendaraan LIKE ?";
+        params.push(`%${merk}%`);
+      }
 
-    if (tipe) {
-      query += " AND transmisi LIKE ?";
-      params.push(`%${tipe}%`);
-    }
+      if (tipe) {
+        query += " AND transmisi LIKE ?";
+        params.push(`%${tipe}%`);
+      }
 
-    if (cc) {
-      query += " AND cc = ?";
-      params.push(cc);
-    }
+      if (cc) {
+        query += " AND cc = ?";
+        params.push(cc);
+      }
 
-    if (sort === "Lowest Price") {
-      query += " ORDER BY hargaPerHari ASC";
-    } else if (sort === "Highest Price") {
-      query += " ORDER BY hargaPerHari DESC";
+      if (sort === "Lowest Price") {
+        query += " ORDER BY hargaPerHari ASC";
+      } else if (sort === "Highest Price") {
+        query += " ORDER BY hargaPerHari DESC";
+      }
     }
 
     const [rows] = await connection.execute(query, params);
