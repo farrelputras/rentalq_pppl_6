@@ -1,16 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import mysql from "mysql2/promise";
+import { pool } from "@/lib/db"; // 0) Import koneksi database dari pool
 
-// Ganti sesuai dengan konfigurasi database kamu
-const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "rentalq",
-};
-
+// 1) Fungsi GET untuk ambil daftar motor berdasarkan filter query
 export async function GET(req: NextRequest) {
   try {
+    // 2) Ambil parameter dari URL (query string)
     const id = req.nextUrl.searchParams.get("id");
     const merk = req.nextUrl.searchParams.get("merk");
     const tipe = req.nextUrl.searchParams.get("tipe");
@@ -19,12 +13,10 @@ export async function GET(req: NextRequest) {
 
     console.log("Query params:", { id, merk, tipe, cc, sort });
 
-    const connection = await mysql.createConnection(dbConfig);
-
-    // Bangun query dasar
+    // 3) Siapkan query dasar dan parameter
     let query = `
       SELECT 
-        idKendaraan AS id,
+        id AS idKendaraan,
         namaKendaraan AS name,
         transmisi AS transmission,
         cc,
@@ -36,6 +28,7 @@ export async function GET(req: NextRequest) {
     `;
     const params: any[] = [];
 
+    // 4) Bangun kondisi query berdasarkan parameter yang dikirim
     if (id) {
       query += " AND idKendaraan = ?";
       params.push(id);
@@ -46,7 +39,7 @@ export async function GET(req: NextRequest) {
       }
 
       if (tipe) {
-        query += " AND transmisi LIKE ?";
+        query += " AND transmisi = ?";
         params.push(`%${tipe}%`);
       }
 
@@ -55,6 +48,7 @@ export async function GET(req: NextRequest) {
         params.push(cc);
       }
 
+      // 5) Sorting (jika diminta)
       if (sort === "Lowest Price") {
         query += " ORDER BY hargaPerHari ASC";
       } else if (sort === "Highest Price") {
@@ -62,11 +56,13 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const [rows] = await connection.execute(query, params);
-    await connection.end();
+    // 6) Eksekusi query dengan pool
+    const [rows] = await pool.query(query, params);
 
+    // 7) Return hasil dalam bentuk JSON
     return NextResponse.json(rows);
   } catch (error) {
+    // 8) Tangani error
     console.error("Failed to fetch motor list:", error);
     return NextResponse.json(
       { error: "Failed to fetch motor list" },

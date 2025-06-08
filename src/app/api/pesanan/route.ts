@@ -1,18 +1,11 @@
-// app/api/pesanan/route.ts
-import { NextResponse } from 'next/server';
-import mysql from 'mysql2/promise';
+import { NextResponse } from "next/server";
+import { pool } from "@/lib/db"; // 0) Import koneksi dari pool
 
-const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'rentalq',
-};
-
+// 1) Fungsi GET untuk mengambil daftar pesanan
 export async function GET() {
   try {
-    const connection = await mysql.createConnection(dbConfig);
-    const [rows] = await connection.execute(`
+    // 2) Jalankan query untuk mengambil data pesanan
+    const [rows] = await pool.query(`
       SELECT 
         p.idPesanan AS id,
         DATE(p.waktuAmbil) AS tanggalSewa,
@@ -28,11 +21,15 @@ export async function GET() {
       JOIN kendaraan k ON p.idKendaraan = k.idKendaraan
       ORDER BY p.waktuAmbil DESC
     `);
-    await connection.end();
 
+    // 3) Return hasil dalam format JSON
     return NextResponse.json(rows);
   } catch (error) {
-    console.error('Failed to fetch pesanan:', error);
-    return NextResponse.json({ error: 'Failed to fetch pesanan' }, { status: 500 });
+    // 4) Tangani error
+    console.error("Failed to fetch pesanan:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch pesanan" },
+      { status: 500 }
+    );
   }
 }
