@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react"; // pastikan sudah install lucide-react
 
 interface SelectProps {
@@ -19,6 +19,16 @@ const Select: React.FC<SelectProps> = ({
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(value || "");
   const [selectedLabel, setSelectedLabel] = useState("");
+
+  useEffect(() => {
+    if (value === undefined || value === "") {
+      setSelected("");
+      setSelectedLabel("");
+    } else {
+      setSelected(value);
+      setSelectedLabel(value);
+    }
+  }, [value]);
 
   const handleSelect = (val: string, label?: string) => {
     setSelected(val);

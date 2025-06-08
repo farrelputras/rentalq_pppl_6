@@ -2,39 +2,55 @@
 
 import Link from "next/link";
 import { ArrowLeft, Wallet, Clock, FileText, Info } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import motorList from "@/app/data/motorlist"; // pastikan path-nya sesuai struktur project kamu
 import SearchBar from "@/ui/SearchBar";
 
-const RentalDetailPage = () => {
-  const { id } = useParams();
+interface Motor {
+  id: number;
+  name: string;
+  transmission: string;
+  cc: number;
+  nopol: string;
+  price: number;
+  image: string;
+}
 
-  const motor = motorList.find((m) => m.id === id);
-
-  if (!motor) {
-    return (
-      <main className="p-6 max-w-3xl mx-auto text-center">
-        <h1 className="text-xl font-semibold text-red-600">
-          Motor tidak ditemukan
-        </h1>
-        <p className="text-gray-600 mt-2">
-          Pastikan URL sudah benar atau pilih motor lain.
-        </p>
-      </main>
-    );
-  }
-
+export default function DetailMotorPage() {
   const rentalPeriod = {
     start: "Thursday, 17 April 2025 10:00 WIB",
     end: "Sunday, 20 April 2025 10:00 WIB",
     days: 2,
   };
 
-  const price = {
-    basic: parseInt(motor.price.replace(/[^\d]/g, ""), 10),
-    total: parseInt(motor.price.replace(/[^\d]/g, ""), 10), // sementara, belum dihitung per hari
-  };
+  const params = useParams();
+  const id = params?.id;
+
+  const [motor, setMotor] = useState<Motor | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMotor = async () => {
+      try {
+        const res = await fetch(`/api/motor?id=${id}`);
+        if (!res.ok) throw new Error("Gagal mengambil data motor");
+        const data = await res.json();
+        setMotor(data[0]); // Ambil elemen pertama dari array
+      } catch (error) {
+        console.error("Error fetching motor:", error);
+        setMotor(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchMotor();
+  }, [id]);
+
+  if (loading) return <div className="p-4">Loading...</div>;
+  if (!motor)
+    return <div className="p-4 text-red-500">Motor tidak ditemukan.</div>;
 
   return (
     <main className="w-full mt-10 mx-15 p-4">
@@ -47,7 +63,7 @@ const RentalDetailPage = () => {
         <div className="md:col-span-2 bg-white shadow rounded-lg p-6">
           <div className="flex gap-4">
             <Image
-              src={motor.image}
+              src={`/${motor.image}`}
               alt={motor.name}
               width={200}
               height={100}
@@ -57,7 +73,7 @@ const RentalDetailPage = () => {
               <div className="flex gap-4 text-lg mt-2 text-black font-bold">
                 <span>🛵 {motor.transmission}</span>
                 <span>⚙️ {motor.cc}</span>
-                <span>🪑 {motor.seats}</span>
+                <span>🪪 {motor.nopol}</span>
               </div>
               <div className="flex flex-wrap gap-2 mt-3">
                 {["Anti Theft Alarm", "12L Baggages", "LED Headlights"].map(
@@ -146,7 +162,7 @@ const RentalDetailPage = () => {
           <div className="text-md text-gray-700 space-y-1">
             <p className="flex justify-between">
               <span>Basic Rental:</span>
-              <span>Rp{price.basic.toLocaleString()}</span>
+              <span>Rp {motor.price.toLocaleString()}</span>
             </p>
             <p className="flex justify-between">
               <span>Pick-up in other location:</span>
@@ -158,7 +174,7 @@ const RentalDetailPage = () => {
             </p>
             <p className="font-semibold">Total Price: </p>
             <p className="text-lg font-bold mt-2 text-blue-600">
-              Rp{price.total.toLocaleString()}
+              Rp {motor.price.toLocaleString()}
             </p>
           </div>
 
@@ -172,6 +188,4 @@ const RentalDetailPage = () => {
       </div>
     </main>
   );
-};
-
-export default RentalDetailPage;
+}

@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Booking {
   id: number;
@@ -8,36 +8,46 @@ interface Booking {
   startTime: string;
   endTime: string;
   jenisMotor: string;
-  status: 'Selesai' | 'Dibatalkan' | 'Diproses';
+  status: 'Selesai' | 'Dibatalkan' | 'Diproses' | 'Menunggu Konfirmasi' | 'Dikonfirmasi';
   gambar: string;
   inv: string;
   total: string;
 }
 
-const dummyBookings: Booking[] = [
-  {
-    id: 1,
-    tanggalSewa: 'Thursday, 17 April 2025',
-    tanggalKembali: 'Sunday, 20 April 2025',
-    startTime: '10:00 WIB',
-    endTime: '10:00 WIB',
-    jenisMotor: 'Honda BeAT All New 2025',
-    status: 'Selesai',
-    gambar: '/Honda_Beat_All_New_2025.png',
-    inv: 'INV/20250417/HBAN/846191238564',
-    total: 'Rp45.000',
-  }
-];
-
 export default function RiwayatPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [search, setSearch] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'Semua' | 'Selesai' | 'Dibatalkan' | 'Diproses'>('Semua');
+  const [filterStatus, setFilterStatus] = useState<'Semua' | 'Selesai' | 'Dibatalkan' | 'Diproses' | 'Menunggu Konfirmasi' | 'Dikonfirmasi'>('Semua');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
-  const filteredBookings = dummyBookings.filter((b) =>
+  useEffect(() => {
+    fetch('/api/pesanan')
+      .then((res) => res.json())
+      .then((data: Booking[]) => setBookings(data))
+      .catch((err) => console.error('Gagal memuat data:', err));
+  }, []);
+
+  const filteredBookings = bookings.filter((b) =>
     (filterStatus === 'Semua' || b.status === filterStatus) &&
     b.jenisMotor.toLowerCase().includes(search.toLowerCase())
   );
+
+  const getStatusClass = (status: Booking['status']) => {
+    switch (status) {
+      case 'Selesai':
+        return 'bg-green-200 text-green-800';
+      case 'Diproses':
+        return 'bg-blue-500 text-white';
+      case 'Dibatalkan':
+        return 'bg-red-100 text-red-700';
+      case 'Menunggu Konfirmasi':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Dikonfirmasi':
+        return 'bg-blue-100 text-blue-700';
+      default:
+        return 'bg-gray-200 text-gray-600';
+    }
+  };
 
   return (
     <div className="p-4 md:p-6 font-[Poppins] min-h-screen w-screen bg-gray-100">
@@ -45,9 +55,7 @@ export default function RiwayatPage() {
       <div className="bg-white shadow-md p-4 rounded-xl mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Rental Motor</h2>
-          <p className="text-sm text-gray-500">
-            Thu, 17 April 2025, 10:00 WIB - Sun, 20 April 2025, 10:00 WIB
-          </p>
+          <p className="text-sm text-gray-500">Thu, 17 April 2025, 10:00 WIB - Sun, 20 April 2025, 10:00 WIB</p>
         </div>
         <button className="flex items-center gap-2 text-[#468BF2] text-sm font-medium border border-[#468BF2] px-3 py-1 rounded-md">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -57,13 +65,15 @@ export default function RiwayatPage() {
         </button>
       </div>
 
-      {/* Filter Tab */}
+      {/* Filter Status */}
       <div className="flex items-center gap-3 pl-2 mb-6">
         <span className="text-sm font-medium text-gray-600">Status:</span>
         {[
           { label: 'All', value: 'Semua' },
-          { label: 'Ongoing', value: 'Diproses' },
+          { label: 'Waiting', value: 'Menunggu Konfirmasi' },
+          { label: 'Ongoing', value: 'Dikonfirmasi' },
           { label: 'Finished', value: 'Selesai' },
+          { label: 'Canceled', value: 'Dibatalkan' },
         ].map(({ label, value }) => (
           <button
             key={value}
@@ -79,19 +89,16 @@ export default function RiwayatPage() {
         ))}
       </div>
 
-      {/* Booking List */}
+      {/* Booking Cards */}
       <div className="grid gap-4">
         {filteredBookings.map((b) => (
           <div key={b.id} className="bg-white rounded-xl border shadow-sm p-4 flex items-center justify-between gap-4">
             <img src={b.gambar} alt={b.jenisMotor} className="w-28 h-20 object-cover rounded-lg" />
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-                  b.status === 'Selesai' ? 'bg-green-200 text-green-800'
-                  : b.status === 'Diproses' ? 'bg-[#468BF2] text-white'
-                  : 'bg-red-100 text-red-700'
-                }`}>{b.status}</span>
-                <span className="text-xs text-gray-500">{b.inv}</span>
+                <span className={`text-xs px-2 py-1 rounded-full font-semibold ${getStatusClass(b.status)}`}>
+                  {b.status}
+                </span>
               </div>
               <h3 className="text-base font-semibold">{b.jenisMotor}</h3>
               <div className="flex text-sm text-gray-500 mt-2 gap-30">
@@ -128,11 +135,10 @@ export default function RiwayatPage() {
         ))}
       </div>
 
-      {/* Modal */}
+      {/* Modal Detail */}
       {selectedBooking && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4">
           <div className="bg-white rounded-xl w-full max-w-xl overflow-hidden">
-            {/* Header Biru */}
             <div className="bg-[#468BF2] flex justify-between items-center px-6 py-3">
               <h2 className="text-white font-semibold text-base">Detail Transaksi</h2>
               <button
@@ -143,12 +149,12 @@ export default function RiwayatPage() {
               </button>
             </div>
 
-            {/* Konten */}
             <div className="p-6 space-y-6">
-              {/* Pesanan Selesai */}
               <div>
-                <h2 className="text-green-600 font-semibold text-base mb-2">Pesanan Selesai</h2>
-                <hr className="mb-3" />
+                <span className={`text-sm font-medium px-2 py-1 rounded-full ${getStatusClass(selectedBooking.status)}`}>
+                  {selectedBooking.status}
+                </span>
+                <hr className="my-3" />
                 <div className="grid grid-cols-2 text-sm">
                   <p className="text-gray-500">Nomor Pesanan</p>
                   <p className="text-green-600 font-medium text-right">{selectedBooking.inv}</p>
@@ -193,9 +199,7 @@ export default function RiwayatPage() {
                     <p className="text-gray-700">Rp0</p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="text-gray-500">
-                      Promo used <span className="font-semibold">(CODE: <span className="italic">RENTQUE</span>)</span>
-                    </p>
+                    <p className="text-gray-500">Promo used <span className="font-semibold">(CODE: <span className="italic">RENTQUE</span>)</span></p>
                     <p className="text-green-600 font-medium">- Rp5.000</p>
                   </div>
                   <div className="flex justify-between mt-2">
@@ -208,9 +212,9 @@ export default function RiwayatPage() {
               <div className="flex justify-end">
                 <button
                   onClick={() => setSelectedBooking(null)}
-                  className="px-4 py-2 cursor-pointer border border-gray-300 rounded-md text-sm hover:bg-gray-100"
+                  className="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300"
                 >
-                  Tutup
+                  Close
                 </button>
               </div>
             </div>

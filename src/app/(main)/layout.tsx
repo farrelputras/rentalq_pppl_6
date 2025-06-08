@@ -7,11 +7,9 @@ export default function MainLayout({ children }: { children: ReactNode }) {
     <>
       <Navbar />
       {/* Background warna setengah setengah */}
-     
-        <main className="flex-1 flex items-center justify-center"
-        style={{
-          background: "linear-gradient(to bottom, #0C59B3 30%, #E6EEF7 30%)",
-        }}>{children}</main>
+      <main className="flex-1 flex items-center justify-center">
+        {children}
+      </main>
     </>
   );
 }
