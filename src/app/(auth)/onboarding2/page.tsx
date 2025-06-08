@@ -18,7 +18,15 @@ export default function HeroSection() {
           height={40}
         />
       </div>
-
+       {/* Tombol Skip di pojok kanan atas */}
+      <div className="absolute top-6 right-6 z-50">
+        <Link href="/login">
+          <button className="px-3 py-1.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-md hover:bg-blue-200 transition">
+            Skip Onboarding
+          </button>
+        </Link>
+      </div>
+      
       {/* Video Modal */}
       {showVideo && (
         <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
@@ -51,7 +59,7 @@ export default function HeroSection() {
           <div className="flex gap-4">
             <Link href="/onboarding3">
               <button className="cursor-pointer w-48 h-12 bg-blue-700 text-white rounded-md text-sm font-bold hover:bg-blue-800 transition flex items-center justify-center">
-                Mulai Sewa
+                Lanjut
               </button>
             </Link>
             <button
