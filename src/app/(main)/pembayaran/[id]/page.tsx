@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/ui/SearchBar";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import motorList from "@/app/data/motorlist"; // ← import dari file eksternal
 import { FileText, Info } from "lucide-react";
-import { Card, CardContent } from "@/components/Card";
-import Radio from "@/components/Radio";
-import { Button } from "@/components/Button"
+import { Card, CardContent } from "@/ui/Card";
+import Radio from "@/ui/Radio";
+import { Button } from "@/ui/Button"
 
 const OrderDetailPage = () => {
   const { id } = useParams();

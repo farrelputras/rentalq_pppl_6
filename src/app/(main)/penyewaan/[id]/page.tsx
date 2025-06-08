@@ -5,7 +5,7 @@ import { ArrowLeft, Wallet, Clock, FileText, Info } from "lucide-react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import motorList from "@/app/data/motorlist"; // pastikan path-nya sesuai struktur project kamu
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/ui/SearchBar";
 
 const RentalDetailPage = () => {
   const { id } = useParams();

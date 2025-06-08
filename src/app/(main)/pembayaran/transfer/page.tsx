@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/Card";
-import { Button } from "@/components/Button";
+import { Card, CardContent } from "@/ui/Card";
+import { Button } from "@/ui/Button";
 
 export default function BayarTransfer() {
   const router = useRouter();

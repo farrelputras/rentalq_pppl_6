@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/Button";
+import { Button } from "@/ui/Button";
 import { ArrowLeft, Search } from "lucide-react";
 import motorList from "@/app/data/motorlist";
 

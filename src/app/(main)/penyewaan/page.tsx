@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/Button";
-import { Card } from "@/components/Card";
-import { Select, SelectContent, SelectItem } from "@/components/Select";
+import { Button } from "@/ui/Button";
+import { Card } from "@/ui/Card";
+import { Select, SelectContent, SelectItem } from "@/ui/Select";
 import { Search } from "lucide-react";
 import Link from "next/link";
-import SearchBar from "@/components/SearchBar";
+import SearchBar from "@/ui/SearchBar";
 import motorList from "@/app/data/motorlist"; // ← import dari file eksternal
 
 const RentalMotor = () => {
