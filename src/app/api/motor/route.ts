@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
     // 4) Bangun kondisi query berdasarkan parameter yang dikirim
     if (id) {
-      query += " AND idKendaraan = ?";
+      query += " AND id = ?";
       params.push(id);
     } else {
       if (merk) {

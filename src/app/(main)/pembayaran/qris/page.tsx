@@ -1,13 +1,49 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/ui/Card";
 import { Button } from "@/ui/Button";
+import { useEffect, useState } from "react";
+
+interface Pesanan {
+  id: number;
+  basicBiaya: number;
+  pickupBiaya: number;
+  taxBiaya: number;
+  promo: number;
+  totalBiaya: number;
+}
 
 export default function BayarQRIS() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
+  const [pesanan, setPesanan] = useState<Pesanan | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPesanan = async () => {
+      try {
+        const res = await fetch(`/api/pesanan?id=${id}`);
+        if (!res.ok) throw new Error("Failed to fetch pesanan");
+        const data = await res.json();
+        setPesanan(data[0]);
+      } catch (err) {
+        console.error("Error fetching pesanan:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) fetchPesanan();
+  }, [id]);
+
+  if (loading) return <div className="p-4">Loading...</div>;
+  if (!pesanan)
+    return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
 
   return (
     // Card
@@ -50,24 +86,28 @@ export default function BayarQRIS() {
                 <hr className="mt-3 mb-3 border-gray-300" />
                 <p className="flex justify-between text-gray-500 font-semibold mb-1">
                   <span>Basic Rental</span>
-                  <span>Rp. 50.000</span>
+                  <span>Rp {pesanan.basicBiaya.toLocaleString()}</span>
                 </p>
                 <p className="flex justify-between text-gray-500 font-semibold mb-1">
                   <span>Pick-up in other location</span>
-                  <span>Rp. 0</span>
+                  <span>Rp {pesanan.pickupBiaya.toLocaleString()}</span>
                 </p>
                 <p className="flex justify-between text-gray-500 font-semibold mb-1">
                   <span>Taxes & fees</span>
-                  <span>Rp. 0</span>
+                  <span>Rp {pesanan.taxBiaya.toLocaleString()}</span>
                 </p>
                 <p className="flex justify-between text-gray-500 font-semibold mb-1">
                   <span>Promo used (CODE: RENTQUE)</span>
-                  <span style={{ color: "#2EB938" }}>- Rp. 5.000</span>
+                  <span style={{ color: "#2EB938" }}>
+                    - Rp {pesanan.promo.toLocaleString()}
+                  </span>
                 </p>
                 <hr className="mt-3 mb-3 border-gray-300" />
                 <p className="flex justify-between text-gray-500 text-lg font-bold mb-1">
                   <span>Total Price</span>
-                  <span style={{ color: "#468BF2" }}>Rp. 45.000</span>
+                  <span style={{ color: "#468BF2" }}>
+                    Rp {pesanan.totalBiaya.toLocaleString()}
+                  </span>
                 </p>
               </CardContent>
             </Card>
@@ -110,9 +150,6 @@ export default function BayarQRIS() {
                   <Button
                     className="w-full sm:w-auto text-white font-bold cursor-pointer"
                     style={{ backgroundColor: "#468BF2" }}
-                    onClick={() => {
-                      router.push("/penyewaan");
-                    }}
                   >
                     Back to Home
                   </Button>
