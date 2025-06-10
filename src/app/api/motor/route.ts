@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     // 3) Siapkan query dasar dan parameter
     let query = `
       SELECT 
-        id AS idKendaraan,
+        id AS id,
         namaKendaraan AS name,
         transmisi AS transmission,
         cc,
@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
     if (id) {
       query += " AND id = ?";
       params.push(id);
+
     } else {
       if (merk) {
         query += " AND namaKendaraan LIKE ?";
@@ -39,8 +40,8 @@ export async function GET(req: NextRequest) {
       }
 
       if (tipe) {
-        query += " AND transmisi = ?";
-        params.push(`%${tipe}%`);
+        query += " AND LOWER(transmisi) LIKE ?";
+        params.push(`%${tipe.toLowerCase()}%`);
       }
 
       if (cc) {

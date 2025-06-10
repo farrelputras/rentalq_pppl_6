@@ -9,7 +9,7 @@ import Link from "next/link";
 import SearchBar from "@/ui/SearchBar";
 
 type Motor = {
-  idKendaraan: number;
+  id: number;
   name: string;
   transmission: string;
   cc: string;
@@ -128,7 +128,7 @@ const RentalMotor = () => {
         <div className="space-y-4">
           {paginatedMotors.map((motor) => (
             <Card
-              key={motor.idKendaraan}
+              key={motor.id}
               className="flex items-center justify-between p-4"
             >
               <div className="flex items-center gap-4">
@@ -152,7 +152,7 @@ const RentalMotor = () => {
                   Rp{motor.price.toLocaleString()}
                   <span className="text-sm text-gray-500"> /day</span>
                 </p>
-                <Link href={`/penyewaan/${motor.idKendaraan}`}>
+                <Link href={`/penyewaan/${motor.id}`}>
                   <Button className="mt-2">Pilih</Button>
                 </Link>
               </div>
