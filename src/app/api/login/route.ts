@@ -1,27 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import mysql from "mysql2/promise";
 import { RowDataPacket } from "mysql2";
 import { pool } from "@/lib/db.js";
 
-// Extend RowDataPacket untuk mengetik baris hasil query
 interface UserRow extends RowDataPacket {
   idUser: number;
   username: string;
   password: string;
   nama: string;
+  email: string;
   sudahVerifikasi: boolean;
 }
 
-// 1) Fungsi handler untuk request POST (login)
+interface AdminRow extends RowDataPacket {
+  id: number;
+  username: string;
+  password: string;
+  nama: string;
+  email: string;
+  noTelp: string;
+  sudahVerifikasi: number;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    // 2) Ambil body JSON dari request (email & password)
     const { email, password } = (await req.json()) as {
       email?: string;
       password?: string;
     };
 
-    // 3) Validasi input: email dan password tidak boleh kosong
     if (!email || !password) {
       return NextResponse.json(
         { message: "Email dan password wajib diisi." },
@@ -29,64 +35,95 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 4) Jalankan query mencari user berdasarkan email
-    const [rows] = await pool.query<UserRow[]>(
-      `
-      SELECT id, username, password, nama, sudahVerifikasi
-      FROM users
-      WHERE email = ?
-      `,
+    // 🌐 1. Coba cari di tabel users (login via email)
+    const [userRows] = await pool.query<UserRow[]>(
+      `SELECT * FROM users WHERE email = ?`,
       [email]
     );
 
-    // 5) Jika user tidak ditemukan
-    if (rows.length === 0) {
-      return NextResponse.json(
-        { message: "Email atau password salah." },
-        { status: 401 }
-      );
-    }
+    if (userRows.length > 0) {
+      const user = userRows[0];
+      if (user.password !== password) {
+        return NextResponse.json(
+          { message: "Email atau password salah." },
+          { status: 401 }
+        );
+      }
 
-    const user = rows[0];
+      if (!user.sudahVerifikasi) {
+        return NextResponse.json(
+          {
+            message: "Akun belum terverifikasi. Silakan cek email verifikasi Anda.",
+          },
+          { status: 403 }
+        );
+      }
 
-    // 6) Bandingkan password (note: di produksi gunakan hash)
-    if (user.password !== password) {
-      return NextResponse.json(
-        { message: "Email atau password salah." },
-        { status: 401 }
-      );
-    }
-
-    // 7) Cek apakah akun sudah terverifikasi
-    if (!user.sudahVerifikasi) {
       return NextResponse.json(
         {
-          message:
-            "Akun belum terverifikasi. Silakan cek email verifikasi Anda.",
+          message: "Login berhasil sebagai user.",
+          role: "user",
+          data: {
+            idUser: user.idUser,
+            username: user.username,
+            nama: user.nama,
+            email: user.email,
+          },
         },
-        { status: 403 }
+        { status: 200 }
       );
     }
 
-    // 8) Jika login berhasil, kembalikan data user (tanpa password)
-    return NextResponse.json(
-      {
-        message: "Login berhasil.",
-        data: {
-          idUser: user.idUser,
-          username: user.username,
-          nama: user.nama,
+    // 🛡️ 2. Jika tidak ada user, coba cari di tabel admin (login via email juga)
+    const [adminRows] = await pool.query<AdminRow[]>(
+      `SELECT * FROM admin WHERE email = ?`,
+      [email]
+    );
+
+    if (adminRows.length > 0) {
+      const admin = adminRows[0];
+      if (admin.password !== password) {
+        return NextResponse.json(
+          { message: "Email atau password salah." },
+          { status: 401 }
+        );
+      }
+
+      if (!admin.sudahVerifikasi) {
+        return NextResponse.json(
+          {
+            message: "Akun admin belum terverifikasi.",
+          },
+          { status: 403 }
+        );
+      }
+
+      return NextResponse.json(
+        {
+          message: "Login berhasil sebagai admin.",
+          role: "admin",
+          data: {
+            idAdmin: admin.id,
+            username: admin.username,
+            nama: admin.nama,
+            email: admin.email,
+            noTelp: admin.noTelp,
+          },
         },
-      },
-      { status: 200 }
+        { status: 200 }
+      );
+    }
+
+    // ❌ Tidak ditemukan
+    return NextResponse.json(
+      { message: "Email atau password salah." },
+      { status: 404 }
     );
   } catch (error) {
-    // 9) Tangani error dan log untuk debug
-    let message = "Terjadi kesalahan server.";
-    if (error instanceof Error) {
-      message = error.message;
-    }
-    console.error("Login API error:", error);
-    return NextResponse.json({ message }, { status: 500 });
+    console.error("Login error:", error);
+    return NextResponse.json(
+      { message: "Terjadi kesalahan server." },
+      { status: 500 }
+    );
   }
 }

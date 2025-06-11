@@ -28,10 +28,13 @@ export default function LoginPage() {
         throw new Error(result.message || 'Login gagal')
       }
 
-      // Jika berhasil, redirect ke /home
-      router.push('/home')
+      // Redirect sesuai role
+      if (result.role === 'admin') {
+        router.push('/admin')
+      } else {
+        router.push('/home')
+      }
     } catch (err: any) {
-      // Beri tipe 'any' pada err agar tidak dianggap unknown
       setErrorMsg(err.message || 'Terjadi kesalahan saat login.')
     }
   }
