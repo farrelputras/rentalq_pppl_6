@@ -44,3 +44,53 @@ export async function GET(req: NextRequest) {
     );
   }
 }
+
+// POST /api/pesanan
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+
+    const {
+      idKendaraan,
+      idUser,
+      idBayar,
+      waktuAmbil,
+      waktuKembali,
+      basicBiaya,
+      pickupBiaya,
+      taxBiaya,
+      promo,
+      totalBiaya,
+    } = body;
+
+    const [result]: any = await pool.query(
+      `INSERT INTO pesanan (
+        idKendaraan, idUser, idBayar, waktuAmbil, waktuKembali, 
+        statusPesanan, basicBiaya, pickupBiaya, taxBiaya, promo, totalBiaya
+      ) VALUES (?, ?, ?, ?, ?, 'Menunggu Konfirmasi', ?, ?, ?, ?, ?)`,
+      [
+        idKendaraan,
+        idUser,
+        idBayar,
+        waktuAmbil,
+        waktuKembali,
+        basicBiaya,
+        pickupBiaya,
+        taxBiaya,
+        promo,
+        totalBiaya,
+      ]
+    );
+
+    return NextResponse.json({
+      success: true,
+      insertedId: result.insertId,
+    });
+  } catch (error) {
+    console.error("Failed to insert pesanan:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to create pesanan" },
+      { status: 500 }
+    );
+  }
+}

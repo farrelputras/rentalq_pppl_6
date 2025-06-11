@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { ArrowLeft, Wallet, Clock, FileText, Info } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import SearchBar from "@/ui/SearchBar";
 
@@ -24,6 +24,8 @@ export default function DetailMotorPage() {
     days: 2,
   };
 
+  const router = useRouter();
+  const linkRef = useRef<HTMLAnchorElement | null>(null);
   const params = useParams();
   const id = params?.id;
 
@@ -52,11 +54,55 @@ export default function DetailMotorPage() {
   if (!motor)
     return <div className="p-4 text-red-500">Motor tidak ditemukan.</div>;
 
+  const handlePesan = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+
+    const idUser = 1; // Ganti sesuai autentikasi
+    const idBayar = 1;
+
+    const now = new Date();
+    const waktuAmbil = new Date(now);
+    const waktuKembali = new Date(now);
+    waktuKembali.setDate(waktuAmbil.getDate() + rentalPeriod.days);
+
+    const toDateTimeString = (date: Date) =>
+      date.toISOString().slice(0, 19).replace("T", " ");
+
+    const payload = {
+      idKendaraan: motor.id,
+      idUser,
+      idBayar,
+      waktuAmbil: toDateTimeString(waktuAmbil),
+      waktuKembali: toDateTimeString(waktuKembali),
+      basicBiaya: motor.price,
+      pickupBiaya: 0,
+      taxBiaya: 0,
+      promo: 0,
+      totalBiaya: motor.price,
+    };
+
+    try {
+      const res = await fetch("/api/pesanan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        router.push(`/pembayaran/${data.insertedId}`);
+      } else {
+        alert("Gagal membuat pesanan");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Terjadi error");
+    }
+  };
+
   return (
     <main className="w-full mt-10 mx-15 p-4">
-      <>
-        <SearchBar />
-      </>
+      <SearchBar />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Motor Info */}
@@ -90,7 +136,6 @@ export default function DetailMotorPage() {
             </div>
           </div>
 
-          {/* Rental Policy */}
           <div className="mt-6 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
             <h3 className="font-semibold mb-2 flex items-center gap-2">
               <FileText className="w-6 h-6 text-blue-600" />
@@ -106,7 +151,6 @@ export default function DetailMotorPage() {
             </ul>
           </div>
 
-          {/* Important Info */}
           <div className="mt-4 p-4 bg-white rounded-xl shadow-sm border border-gray-200">
             <h3 className="font-semibold mb-2 flex items-center gap-2">
               <Info className="w-6 h-6 text-yellow-500" />
@@ -179,7 +223,9 @@ export default function DetailMotorPage() {
           </div>
 
           <Link
-            href={`/pembayaran/${id}`}
+            href=""
+            onClick={handlePesan}
+            ref={linkRef}
             className="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-center block"
           >
             Pesan
