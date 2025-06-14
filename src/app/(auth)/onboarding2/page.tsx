@@ -21,9 +21,9 @@ export default function HeroSection() {
        {/* Tombol Skip di pojok kanan atas */}
       <div className="absolute top-6 right-6 z-50">
         <Link href="/login">
-          <button className="px-3 py-1.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-md hover:bg-blue-200 transition">
-            Skip Onboarding
-          </button>
+          <button className="px-3 py-1.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-md hover:bg-blue-200 transition flex items-center gap-1 cursor-pointer">
+              Skip Onboarding <span className="text-base">➔</span>
+        </button>
         </Link>
       </div>
       
