@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface Booking {
   id: number;
@@ -12,6 +13,10 @@ interface Booking {
   gambar: string;
   inv: string;
   total: string;
+  basicBiaya: number;
+  pickupBiaya: number;
+  taxBiaya: number;
+  promo: number;
 }
 
 export default function RiwayatPage() {
@@ -49,13 +54,17 @@ export default function RiwayatPage() {
     }
   };
 
+  const calculateTotal = (booking: Booking) => {
+    return booking.basicBiaya + booking.pickupBiaya + booking.taxBiaya - booking.promo;
+  };
+
   return (
     <div className="p-4 md:p-6 font-[Poppins] min-h-screen w-screen bg-gray-100">
       {/* Header */}
       <div className="bg-white shadow-md p-4 rounded-xl mb-4 flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold">Rental Motor</h2>
-          <p className="text-sm text-gray-500">Thu, 17 April 2025, 10:00 WIB - Sun, 20 April 2025, 10:00 WIB</p>
+          <p className="text-sm text-gray-500">History of your bookings</p>
         </div>
         <button className="flex items-center gap-2 text-[#468BF2] text-sm font-medium border border-[#468BF2] px-3 py-1 rounded-md">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,12 +113,12 @@ export default function RiwayatPage() {
               <div className="flex text-sm text-gray-500 mt-2 gap-30">
                 <div className="min-w-[150px]">
                   <p className="text-xs">Start</p>
-                  <p>{b.tanggalSewa}</p>
+                  <p>{new Date(b.tanggalSewa).toLocaleDateString()}</p>
                   <p className="text-blue-600 font-semibold">{b.startTime}</p>
                 </div>
                 <div className="min-w-[150px]">
                   <p className="text-xs">End</p>
-                  <p>{b.tanggalKembali}</p>
+                  <p>{new Date(b.tanggalKembali).toLocaleDateString()}</p>
                   <p className="text-blue-600 font-semibold">{b.endTime}</p>
                 </div>
               </div>
@@ -117,7 +126,7 @@ export default function RiwayatPage() {
             <div className="flex flex-col justify-between items-end min-w-[160px] h-full">
               <div className="mb-6">
                 <p className="text-s text-gray-400 text-right">Total</p>
-                <p className="text-blue-600 text-xl font-bold">{b.total}</p>
+                <p className="text-blue-600 text-xl font-bold">Rp{calculateTotal(b).toLocaleString()}</p>
               </div>
               <div className="flex gap-4">
                 <button
@@ -126,9 +135,11 @@ export default function RiwayatPage() {
                 >
                   Details
                 </button>
-                <button className="bg-[#468BF2] text-white text-base font-semibold px-5 py-2 rounded-md">
-                  Order Lagi
-                </button>
+                <Link href="/penyewaan">
+                  <button className="cursor-pointer hover:bg-[#3577cc] bg-[#468BF2] text-white text-base font-semibold px-5 py-2 rounded-md">
+                    Order Lagi
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -160,7 +171,7 @@ export default function RiwayatPage() {
                   <p className="text-green-600 font-medium text-right">{selectedBooking.inv}</p>
                   <p className="text-gray-500 mt-2">Tanggal & Waktu Pesanan</p>
                   <p className="text-right mt-2">
-                    {selectedBooking.tanggalSewa}, {selectedBooking.startTime}
+                    {new Date(selectedBooking.tanggalSewa).toLocaleDateString()}, {selectedBooking.startTime}
                   </p>
                 </div>
               </div>
@@ -174,10 +185,12 @@ export default function RiwayatPage() {
                     <img src={selectedBooking.gambar} alt={selectedBooking.jenisMotor} className="w-16 h-14 object-cover rounded-md" />
                     <div>
                       <h3 className="font-semibold text-sm">{selectedBooking.jenisMotor}</h3>
-                      <p className="text-xs text-gray-500">1x Rp50.000</p>
+                      <p className="text-xs text-gray-500">1x Rp{Number(selectedBooking.basicBiaya).toLocaleString()}</p>
                     </div>
                   </div>
-                  <button className="bg-[#468BF2] text-white text-sm font-semibold px-4 py-1 rounded-md">Order Lagi</button>
+                  <Link href="/penyewaan">
+                    <button className="cursor-pointer hover:bg-[#3577cc] bg-[#468BF2] text-white text-sm font-semibold px-4 py-1 rounded-md">Order Lagi</button>
+                  </Link>
                 </div>
               </div>
 
@@ -188,23 +201,23 @@ export default function RiwayatPage() {
                 <div className="text-sm space-y-1">
                   <div className="flex justify-between">
                     <p className="text-gray-500">Basic Rental</p>
-                    <p className="text-gray-700">Rp50.000</p>
+                    <p className="text-gray-700">Rp{Number(selectedBooking.basicBiaya).toLocaleString()}</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="text-gray-500">Pick-up in other location</p>
-                    <p className="text-gray-700">Rp0</p>
+                    <p className="text-gray-700">Rp{Number(selectedBooking.pickupBiaya).toLocaleString()}</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="text-gray-500">Taxes & fees</p>
-                    <p className="text-gray-700">Rp0</p>
+                    <p className="text-gray-700">Rp{Number(selectedBooking.taxBiaya).toLocaleString()}</p>
                   </div>
                   <div className="flex justify-between">
-                    <p className="text-gray-500">Promo used <span className="font-semibold">(CODE: <span className="italic">RENTQUE</span>)</span></p>
-                    <p className="text-green-600 font-medium">- Rp5.000</p>
+                    <p className="text-gray-500">Promo used</p>
+                    <p className="text-green-600 font-medium">- Rp{Number(selectedBooking.promo).toLocaleString()}</p>
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="font-semibold text-sm">Total Price</p>
-                    <p className="text-blue-600 font-bold">{selectedBooking.total}</p>
+                    <p className="text-blue-600 font-bold">Rp{(selectedBooking.basicBiaya + selectedBooking.pickupBiaya + selectedBooking.taxBiaya - selectedBooking.promo).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
