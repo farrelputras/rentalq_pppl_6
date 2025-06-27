@@ -28,10 +28,25 @@ export default function LoginPage() {
         throw new Error(result.message || 'Login gagal')
       }
 
-      // Redirect sesuai role
+      // Simpan data user/admin ke localStorage
+      const data = result.data
       if (result.role === 'admin') {
+        localStorage.setItem('role', 'admin')
+        localStorage.setItem('id', data.idAdmin)
+        localStorage.setItem('username', data.username)
+        localStorage.setItem('nama', data.nama)
+        localStorage.setItem('email', data.email)
+        localStorage.setItem('noTelp', data.noTelp || '')
+        localStorage.setItem('fotoUser', data.fotoUser || '')
         router.push('/admin')
       } else {
+        localStorage.setItem('role', 'user')
+        localStorage.setItem('id', data.idUser)
+        localStorage.setItem('username', data.username)
+        localStorage.setItem('nama', data.nama)
+        localStorage.setItem('email', data.email)
+        localStorage.setItem('noTelp', data.noTelp || '')
+        localStorage.setItem('fotoUser', data.fotoUser || '')
         router.push('/home')
       }
     } catch (err: any) {
@@ -94,19 +109,14 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Tampilkan error jika ada */}
-            {errorMsg && (
-              <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
-            )}
+            {errorMsg && <p className="text-red-500 text-sm mt-1">{errorMsg}</p>}
 
-            {/* Forgot Password */}
             <div className="text-right">
               <a href="#" className="text-sm text-blue-600 hover:underline">
                 Forgot Password?
               </a>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               className="cursor-pointer block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
