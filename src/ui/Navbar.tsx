@@ -1,9 +1,26 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from 'next/link'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+
+type UserProfile = {
+  nama: string
+  fotoUser: string
+}
 
 export default function Navbar() {
+  const [user, setUser] = useState<UserProfile | null>(null)
+
+  useEffect(() => {
+    const nama = localStorage.getItem('nama')
+    const fotoUser = localStorage.getItem('fotoUser')
+
+    if (nama && fotoUser !== null) {
+      setUser({ nama, fotoUser })
+    }
+  }, [])
+
   return (
     <nav
       className="w-full flex items-center justify-between px-6 py-4"
@@ -24,15 +41,15 @@ export default function Navbar() {
 
       {/* Right: Profile */}
       <Link href="/profile" className="flex items-center gap-2 text-white hover:underline">
-        <span>Cynthia</span>
+        <span>{user?.nama ?? 'Loading...'}</span>
         <Image
-          src="/profile.svg"
+          src={user?.fotoUser || '/profile.svg'}
           alt="Profile"
           width={32}
           height={32}
-          className="rounded-full"
+          className="rounded-full object-cover"
         />
       </Link>
     </nav>
-  );
+  )
 }
