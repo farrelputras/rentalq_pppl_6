@@ -9,11 +9,10 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center font-[Poppins]">
-
       {/* Logo */}
       <div className="absolute top-6 left-6 z-50 flex items-center">
         <Image
-          src="/logo_nyamping_blue.svg"
+          src="/icons/rentalq-logo-nyamping.svg"
           alt="RentalQ Logo"
           width={120}
           height={40}
@@ -22,11 +21,11 @@ export default function HeroSection() {
 
       {/* Tombol Skip di pojok kanan atas */}
       <div className="absolute top-6 right-6 z-50">
-          <Link href="/login">
+        <Link href="/login">
           <button className="px-3 py-1.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-md hover:bg-blue-200 transition flex items-center gap-1 cursor-pointer">
-              Skip Onboarding <span className="text-base">➔</span>
-            </button>
-          </Link>
+            Skip Onboarding <span className="text-base">➔</span>
+          </button>
+        </Link>
       </div>
 
       {/* Video Modal */}

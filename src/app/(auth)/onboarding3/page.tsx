@@ -12,7 +12,7 @@ export default function HeroSection() {
       {/* Logo */}
       <div className="absolute top-6 left-6 z-50 flex items-center">
         <Image
-          src="/logo_nyamping_blue.svg"
+          src="/icons/rentalq-logo-nyamping.svg"
           alt="RentalQ Logo"
           width={120}
           height={40}

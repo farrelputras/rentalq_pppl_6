@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/ui/Button";
 import { Card } from "@/ui/Card";
-import { Select, SelectContent, SelectItem } from "@/ui/Select";
-import { Search } from "lucide-react";
+import { Select, SelectItem } from "@/ui/Select";
 import Link from "next/link";
 import SearchBar from "@/ui/SearchBar";
 

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "@/ui/Button";
 import { ArrowLeft, Search } from "lucide-react";
-import motorList from "@/app/data/motorlist";
 
 export default function SearchBar() {
   const rentalPeriod = {
@@ -13,7 +12,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="flex items-center justify-between mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+    <div className="flex items-center justify-between mb-4 bg-white rounded-xl shadow-sm border border-gray-200 p-8">
       <div className="flex items-center gap-3">
         {/* Tombol back */}
         <Link href="/penyewaan" className="text-blue-600 hover:text-blue-800">
@@ -22,8 +21,8 @@ export default function SearchBar() {
 
         {/* Judul dan tanggal */}
         <div>
-          <h1 className="text-xl font-semibold">Rental Motor</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-3xl font-semibold">Rental Motor</h1>
+          <p className="text-lg text-gray-500">
             {rentalPeriod.start} - {rentalPeriod.end}
           </p>
         </div>

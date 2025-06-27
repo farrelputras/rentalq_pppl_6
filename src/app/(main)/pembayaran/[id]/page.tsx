@@ -63,8 +63,12 @@ export default function OrderDetailPage() {
     return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
 
   const options = [
-    { label: "QRIS", value: "qris", icon: "/qris_icon.svg" },
-    { label: "Bank Transfer", value: "transfer", icon: "/transfer_icon.svg" },
+    { label: "QRIS", value: "qris", icon: "/icons/qris_icon.svg" },
+    {
+      label: "Bank Transfer",
+      value: "transfer",
+      icon: "/icons/transfer_icon.svg",
+    },
   ];
 
   return (

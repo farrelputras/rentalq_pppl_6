@@ -1,56 +1,60 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import React, { useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setErrorMsg('')
+    e.preventDefault();
+    setErrorMsg("");
 
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-      })
-      const result = await res.json()
+      });
+      const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.message || 'Login gagal')
+        throw new Error(result.message || "Login gagal");
       }
 
       // Simpan data user/admin ke localStorage
-      const data = result.data
-      if (result.role === 'admin') {
-        localStorage.setItem('role', 'admin')
-        localStorage.setItem('id', data.idAdmin)
-        localStorage.setItem('username', data.username)
-        localStorage.setItem('nama', data.nama)
-        localStorage.setItem('email', data.email)
-        localStorage.setItem('noTelp', data.noTelp || '')
-        localStorage.setItem('fotoUser', data.fotoUser || '')
-        router.push('/admin')
+      const data = result.data;
+      if (result.role === "admin") {
+        localStorage.setItem("role", "admin");
+        localStorage.setItem("id", data.idAdmin);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("nama", data.nama);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("noTelp", data.noTelp || "");
+        localStorage.setItem("fotoUser", data.fotoUser || "");
+        router.push("/admin");
       } else {
-        localStorage.setItem('role', 'user')
-        localStorage.setItem('id', data.idUser)
-        localStorage.setItem('username', data.username)
-        localStorage.setItem('nama', data.nama)
-        localStorage.setItem('email', data.email)
-        localStorage.setItem('noTelp', data.noTelp || '')
-        localStorage.setItem('fotoUser', data.fotoUser || '')
-        router.push('/home')
+        localStorage.setItem("role", "user");
+        localStorage.setItem("id", data.idUser);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("nama", data.nama);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("noTelp", data.noTelp || "");
+        localStorage.setItem("fotoUser", data.fotoUser || "");
+        router.push("/home");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Terjadi kesalahan saat login.')
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMsg(err.message || "Terjadi kesalahan saat login.");
+      } else {
+        setErrorMsg("Terjadi kesalahan saat login.");
+      }
     }
   }
 
@@ -59,20 +63,30 @@ export default function LoginPage() {
       {/* Left half */}
       <div className="w-1/2 bg-gradient-to-b from-white to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <Image src="/rentalq-icon.svg" alt="RentalQ Logo" width={160} height={160} />
+          <Image
+            src="/icons/rentalq-logo.svg"
+            alt="RentalQ Logo"
+            width={160}
+            height={160}
+          />
         </div>
       </div>
 
       {/* Right half */}
       <div className="w-1/2 bg-white rounded-l-[3rem] shadow-lg flex items-center justify-center p-10">
         <div className="w-full max-w-lg">
-          <h2 className="text-3xl font-bold text-blue-600">Selamat Datang Kembali,</h2>
+          <h2 className="text-3xl font-bold text-blue-600">
+            Selamat Datang Kembali,
+          </h2>
           <p className="mt-2 text-gray-500">Log in sekarang untuk lanjut</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email address
               </label>
               <input
@@ -88,12 +102,15 @@ export default function LoginPage() {
 
             {/* Password */}
             <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Password
               </label>
               <input
                 id="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -105,11 +122,17 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute top-1/2 right-3 text-gray-500"
               >
-                {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeSlashIcon className="h-5 w-5" />
+                ) : (
+                  <EyeIcon className="h-5 w-5" />
+                )}
               </button>
             </div>
 
-            {errorMsg && <p className="text-red-500 text-sm mt-1">{errorMsg}</p>}
+            {errorMsg && (
+              <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
+            )}
 
             <div className="text-right">
               <a href="#" className="text-sm text-blue-600 hover:underline">
@@ -126,13 +149,16 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-gray-600">
-            Belum memiliki akun?{' '}
-            <a href="/register" className="font-medium text-blue-600 hover:underline">
+            Belum memiliki akun?{" "}
+            <a
+              href="/register"
+              className="font-medium text-blue-600 hover:underline"
+            >
               Daftar di sini
             </a>
           </p>
         </div>
       </div>
     </div>
-  )
+  );
 }

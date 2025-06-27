@@ -18,11 +18,11 @@ export default function HomePage() {
   };
 
   return (
-    <div className="px-4 py-8 bg-[#f1f5f9] min-h-screen">
+    <div className="px-4 py-8 min-h-screen">
       {/* Banner */}
       <div className="w-full mb-8">
         <Image
-          src="/bannerhomepage.svg"
+          src="\images\homepage\bannerhomepage.svg"
           alt="Banner Promo"
           width={1200}
           height={400}
@@ -151,7 +151,7 @@ export default function HomePage() {
               <div className="flex h-full items-center gap-4 p-3">
                 <div className="flex flex-col items-center min-w-[100px]">
                   <Image
-                    src={`/${name}_PP.svg`}
+                    src={`/images/homepage/${name}-PP.svg`}
                     alt={name}
                     width={80}
                     height={80}
@@ -174,7 +174,7 @@ export default function HomePage() {
           Tunggu apalagi? Gunakan
         </p>
         <Image
-          src="/logo_nyamping_blue.svg"
+          src="\icons\rentalq-logo-nyamping.svg"
           alt="RentalQ Logo Blue"
           width={120}
           height={120}

@@ -10,7 +10,7 @@ export default function SplashScreen() {
           className="text-white text-xl font-bold flex items-center gap-2"
         >
           <Image
-            src="/rentalq-icon.svg"
+            src="/icons/rentalq-logo.svg"
             alt="RentalQ Logo"
             width={180}
             height={38}
