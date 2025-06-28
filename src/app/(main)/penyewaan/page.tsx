@@ -123,6 +123,10 @@ const RentalMotor = () => {
       {/* Motor List */}
       {loading ? (
         <p className="text-gray-500 text-center mt-10">Loading motors...</p>
+      ) : motorList.length === 0 ? (
+          <p className="text-gray-600 text-center mt-10 font-semibold">
+        Motor tidak tersedia.
+      </p>
       ) : (
         <div className="space-y-4">
           {paginatedMotors.map((motor) => (
@@ -158,7 +162,7 @@ const RentalMotor = () => {
             </Card>
           ))}
         </div>
-      )}
+      ) }
 
       {/* Pagination Controls */}
       {!loading && totalPages > 1 && (
