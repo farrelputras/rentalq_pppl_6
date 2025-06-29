@@ -75,19 +75,19 @@ export default function LoginPage() {
       {/* Right half */}
       <div className="w-1/2 bg-white rounded-l-[3rem] shadow-lg flex items-center justify-center p-10">
         <div className="w-full max-w-lg">
-          <h2 className="text-3xl font-bold text-blue-600">
-            Selamat Datang Kembali,
+          <h2 className="text-3xl font-bold text-blue-600 text-center">
+            <b>Selamat Datang Kembali,</b>
           </h2>
-          <p className="mt-2 text-gray-500">Log in sekarang untuk lanjut</p>
+          <p className="mt-2 text-gray-500 text-center">Log in sekarang untuk lanjut</p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Email */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-m font-medium text-black"
               >
-                Email address
+                <b>Email address</b>
               </label>
               <input
                 id="email"
@@ -104,9 +104,9 @@ export default function LoginPage() {
             <div className="relative">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-m font-medium text-black"
               >
-                Password
+                <b>Password</b>
               </label>
               <input
                 id="password"
@@ -120,7 +120,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute top-1/2 right-3 text-gray-500"
+                className="absolute top-1/2 right-5 text-black"
               >
                 {showPassword ? (
                   <EyeSlashIcon className="h-5 w-5" />
@@ -142,7 +142,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="cursor-pointer block w-full rounded-full bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
+              className="cursor-pointer block w-full rounded-xl bg-blue-600 py-3 text-white font-medium text-center hover:bg-blue-700 transition"
             >
               Login
             </button>
@@ -154,7 +154,7 @@ export default function LoginPage() {
               href="/register"
               className="font-medium text-blue-600 hover:underline"
             >
-              Daftar di sini
+              <b>Daftar di sini</b>
             </a>
           </p>
         </div>
