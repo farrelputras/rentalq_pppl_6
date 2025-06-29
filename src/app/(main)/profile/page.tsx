@@ -23,6 +23,10 @@ export default function ProfilePage() {
   const [newPhone, setNewPhone] = useState('')
   const [email, setEmail] = useState('')
 
+  const [successUsername, setSuccessUsername] = useState('')
+  const [successPhone, setSuccessPhone] = useState('')
+  const [successAvatar, setSuccessAvatar] = useState('')
+
   useEffect(() => {
     const stored: UserData = {
       username: localStorage.getItem('username') || '',
@@ -38,8 +42,6 @@ export default function ProfilePage() {
     setEmail(stored.email)
   }, [])
 
-  // ------------ JSON-based updates ------------
-
   async function updateUsername() {
     const res = await fetch('/api/profile', {
       method: 'POST',
@@ -48,6 +50,8 @@ export default function ProfilePage() {
     })
     if (res.ok) {
       localStorage.setItem('username', newUsername)
+      setSuccessUsername('Perubahan berhasil disimpan.')
+      setTimeout(() => setSuccessUsername(''), 3000)
       setShowNameModal(false)
     } else {
       const err = await res.json()
@@ -63,14 +67,14 @@ export default function ProfilePage() {
     })
     if (res.ok) {
       localStorage.setItem('noTelp', newPhone)
+      setSuccessPhone('Perubahan berhasil disimpan.')
+      setTimeout(() => setSuccessPhone(''), 3000)
       setShowPhoneModal(false)
     } else {
       const err = await res.json()
       alert(err.message || 'Gagal update no telepon')
     }
   }
-
-  // ------------ Multipart (avatar) ------------
 
   async function updateAvatar(file: File) {
     const formData = new FormData()
@@ -85,13 +89,13 @@ export default function ProfilePage() {
       if (data.photo) {
         setAvatar(data.photo)
         localStorage.setItem('fotoUser', data.photo)
+        setSuccessAvatar('Perubahan berhasil disimpan.')
+        setTimeout(() => setSuccessAvatar(''), 3000)
       }
     } else {
       alert('Gagal update foto')
     }
   }
-
-  // ------------ Handlers ------------
 
   function handleNameSubmit(e: FormEvent) {
     e.preventDefault()
@@ -115,13 +119,11 @@ export default function ProfilePage() {
     router.push('/login')
   }
 
-  // ------------ JSX UI (tidak diubah) ------------
-
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-5xl w-full bg-white rounded-xl shadow-lg p-8 space-y-8">
         <div className="flex flex-col md:flex-row md:space-x-8">
-          {/* Avatar Upload Card */}
+          {/* Avatar Upload */}
           <div className="bg-white rounded-xl shadow p-6 w-full md:w-1/3 flex flex-col items-center">
             <div className="w-40 h-40 mb-4 rounded-full border-4 border-blue-800 overflow-hidden">
               <Image
@@ -145,23 +147,31 @@ export default function ProfilePage() {
             >
               Pilih Foto
             </button>
+            {successAvatar && (
+              <p className="text-green-600 text-sm mt-2">{successAvatar}</p>
+            )}
             <p className="mt-2 text-xs text-gray-500 text-center">
               Besar file: Max. 10.000.000 bytes (10 Megabytes).<br />
               Ekstensi file yang diperbolehkan: .JPG .JPEG .PNG
             </p>
           </div>
 
-          {/* Profile Details Card */}
+          {/* Profile Info */}
           <div className="bg-gray-100 rounded-xl p-6 flex-1 mt-6 md:mt-0 relative">
             <div className="inline-block bg-blue-600 text-white px-6 py-1 rounded-r-full">
               <h2 className="text-lg font-semibold">Profile</h2>
             </div>
             <div className="mt-6 space-y-5">
               {/* Username */}
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start">
                 <div>
                   <p className="text-gray-500">Username</p>
                   <p className="font-medium">{newUsername}</p>
+                  {successUsername && (
+                    <p className="text-green-600 text-sm mt-1">
+                      {successUsername}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={() => setShowNameModal(true)}
@@ -181,10 +191,15 @@ export default function ProfilePage() {
                 <p className="font-medium">{email}</p>
               </div>
               {/* Phone */}
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-start">
                 <div>
                   <p className="text-gray-500">Phone Number</p>
                   <p className="font-medium">{newPhone}</p>
+                  {successPhone && (
+                    <p className="text-green-600 text-sm mt-1">
+                      {successPhone}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={() => setShowPhoneModal(true)}
@@ -292,20 +307,19 @@ export default function ProfilePage() {
                   onClick={() => setShowLogOutModal(false)}
                   className="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
                 >
-                    Cancel
+                  Cancel
                 </button>
                 <button
-                    type="button"
-                    onClick={handleLogOutConfirm}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
+                  type="button"
+                  onClick={handleLogOutConfirm}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition"
                 >
-                    Yes
+                  Yes
                 </button>
               </div>
             </div>
           </div>
         )}
-
       </div>
     </div>
   )
