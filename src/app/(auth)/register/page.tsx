@@ -1,44 +1,39 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [fullname, setFullname] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setErrorMsg("");
+
+    if (password.length < 6) {
+      setErrorMsg("Password harus minimal 6 karakter.");
+      return;
+    }
 
     try {
       const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullname, email, password, confirmPassword }),
+        body: JSON.stringify({ username, email, password, phone }),
       });
       const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.message || "Registrasi gagal");
-      }
-
-      // Jika registasi berhasil, redirect misalnya ke /login
+      if (!res.ok) throw new Error(result.message || "Registrasi gagal");
       router.push("/login");
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setErrorMsg(err.message || "Terjadi kesalahan saat login.");
-      } else {
-        setErrorMsg("Terjadi kesalahan saat login.");
-      }
+      setErrorMsg(err instanceof Error ? err.message : "Terjadi kesalahan.");
     }
   }
 
@@ -46,132 +41,103 @@ export default function RegisterPage() {
     <div className="flex min-h-screen">
       {/* Left half */}
       <div className="w-1/2 bg-gradient-to-b from-white to-blue-50 flex items-center justify-center">
-        <div className="text-center">
-          <Image
-            src="/icons/rentalq-logo.svg"
-            alt="RentalQ Logo"
-            width={160}
-            height={160}
-          />
-        </div>
+        <Image
+          src="/icons/rentalq-logo.svg"
+          alt="RentalQ Logo"
+          width={160}
+          height={160}
+        />
       </div>
 
       {/* Right half */}
       <div className="w-1/2 bg-white rounded-l-[3rem] shadow-lg flex items-center justify-center p-10">
         <div className="w-full max-w-lg">
-          <h2 className="text-3xl font-bold text-blue-600">Buat Akun Baru</h2>
-          <p className="mt-2 text-gray-500">
-            Lengkapi data berikut untuk mendaftar
+          <h2 className="text-3xl font-bold text-blue-600 text-center">
+            <b>Selamat Datang di RentalQ!</b>
+          </h2>
+          <p className="mt-2 text-gray-500 text-center">
+            Mohon untuk hanya memberikan informasi yang dibutuhkan
           </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-            {/* Nama Lengkap */}
+            {/* Username */}
             <div>
-              <label
-                htmlFor="fullname"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Nama Lengkap
+              <label htmlFor="username" className="block text-m font-medium text-black">
+                <b>Username</b>
               </label>
               <input
-                id="fullname"
+                id="username"
                 type="text"
                 required
-                value={fullname}
-                onChange={(e) => setFullname(e.target.value)}
-                placeholder="Nama lengkap Anda"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                placeholder="Your username"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
             {/* Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Email
+              <label htmlFor="email" className="block text-m font-medium text-black">
+                <b>Email Address</b>
               </label>
               <input
                 id="email"
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Alamat email Anda"
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Your email address"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
 
             {/* Password */}
             <div className="relative">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
+              <label htmlFor="password" className="block text-m font-medium text-black">
+                <b>Password</b>
               </label>
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 required
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Your password"
                 className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute top-1/2 right-3 text-gray-500"
+                className="absolute top-1/2 right-5 text-black"
               >
-                {showPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
+                {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
               </button>
             </div>
 
-            {/* Konfirmasi Password */}
-            <div className="relative">
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Konfirmasi Password
+            {/* Phone Number */}
+            <div>
+              <label htmlFor="phone" className="block text-m font-medium text-black">
+                <b>Phone Number</b>
               </label>
               <input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
+                id="phone"
+                type="tel"
                 required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ulangi password"
-                className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 pr-12 focus:border-blue-500 focus:ring-blue-500"
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                placeholder="Your phone number"
+                className="mt-1 block w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-blue-500"
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute top-1/2 right-3 text-gray-500"
-              >
-                {showConfirmPassword ? (
-                  <EyeSlashIcon className="h-5 w-5" />
-                ) : (
-                  <EyeIcon className="h-5 w-5" />
-                )}
-              </button>
             </div>
 
-            {/* Tampilkan error jika ada */}
-            {errorMsg && (
-              <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
-            )}
+            {/* Error message */}
+            {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
 
             {/* Submit */}
             <button
               type="submit"
-              className="cursor-pointer w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
+              className="w-full rounded-xl bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
             >
               Daftar
             </button>
@@ -179,11 +145,8 @@ export default function RegisterPage() {
 
           <p className="mt-6 text-center text-gray-600">
             Sudah punya akun?{" "}
-            <a
-              href="/login"
-              className="font-medium text-blue-600 hover:underline"
-            >
-              Masuk di sini
+            <a href="/login" className="font-medium text-blue-600 hover:underline">
+              <b>Login</b>
             </a>
           </p>
         </div>
