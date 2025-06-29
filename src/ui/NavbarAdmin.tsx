@@ -11,7 +11,7 @@ export default function Navbar() {
     >
       {/* Left: Logo */}
       <Link href="/home" className="text-white text-xl font-bold flex items-center gap-2">
-        <Image src="/logo.svg" alt="RentalQ Logo" width={28} height={28} />
+        <Image src="/icons/rentalq-icon-white.svg" alt="RentalQ Logo" width={28} height={28} />
         RentalQ
       </Link>
 

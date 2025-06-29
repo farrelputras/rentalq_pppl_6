@@ -1,32 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 
-// GET /api/pesanan?id=3
+// ✅ GET /api/pesanan?id=3
 export async function GET(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
 
     let query = `
       SELECT 
+        -- ID dan waktu sewa
         p.id AS id,
         DATE(p.waktuAmbil) AS tanggalSewa,
         DATE(p.waktuKembali) AS tanggalKembali,
         TIME(p.waktuAmbil) AS startTime,
         TIME(p.waktuKembali) AS endTime,
+
+        -- Status pemesanan
+        p.statusPesanan AS status,
+
+        -- Informasi kendaraan
         k.namaKendaraan AS jenisMotor,
         k.transmisi,
         k.cc,
         k.nopol,
-        p.statusPesanan AS status,
         k.fotoKendaraan AS gambar,
+
+        -- Informasi pembayaran
+        b.noInvoice,
+        b.statusBayar AS statusBayar,
+        b.metodeBayar AS metodeBayar,
+
+        -- Informasi pengguna
+        u.nama AS customerName,
+        u.email AS customerEmail,
+        u.fotoUser,
+
+        -- Rincian biaya
         p.idBayar AS inv,
         p.basicBiaya,
         p.pickupBiaya,
         p.taxBiaya,
         p.promo,
         p.totalBiaya
+
       FROM pesanan p
       JOIN kendaraan k ON p.idKendaraan = k.id
+      JOIN users u ON p.idUser = u.id
+      JOIN pembayaran b ON p.idBayar = b.id
     `;
 
     if (id) {
@@ -34,7 +54,6 @@ export async function GET(req: NextRequest) {
     }
 
     const [rows] = await pool.query(query, id ? [id] : []);
-
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Failed to fetch pesanan:", error);
@@ -45,7 +64,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// POST /api/pesanan
+// ✅ POST /api/pesanan
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
