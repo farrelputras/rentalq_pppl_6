@@ -127,7 +127,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-xl shadow p-6 w-full md:w-1/3 flex flex-col items-center">
             <div className="w-40 h-40 mb-4 rounded-full border-4 border-blue-800 overflow-hidden">
               <Image
-                src={avatar}
+                src={avatar || "/images/admin/Cynthia_PP.png"}
                 alt="avatar"
                 width={160}
                 height={160}

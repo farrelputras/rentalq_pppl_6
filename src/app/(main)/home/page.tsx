@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/ui/Card";
+import Link from "next/link";
 
 export default function HomePage() {
   const [motorType, setMotorType] = useState("");
@@ -102,23 +103,25 @@ export default function HomePage() {
             />
           </div>
 
-          {/* Tombol Search */}
-          <button
-            className="flex-none w-12 h-12 rounded bg-blue-600 flex items-center justify-center"
-            type="submit"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 40 40"
-              stroke="white"
-              strokeWidth="2"
+          <Link href="/penyewaan">
+            {/* Tombol Search */}
+            <button
+              className="cursor-pointer flex-none w-12 h-12 rounded bg-blue-600 flex items-center justify-center"
             >
-              <path d="M25.8337 23.3333H24.517L24.0504 22.8833C25.6837 20.9833 26.667 18.5167 26.667 15.8333C26.667 9.85 21.817 5 15.8337 5C9.85037 5 5.00037 9.85 5.00037 15.8333C5.00037 21.8167 9.85037 26.6667 15.8337 26.6667C18.517 26.6667 20.9837 25.6833 22.8837 24.05L23.3337 24.5167V25.8333L31.667 34.15L34.1504 31.6667L25.8337 23.3333ZM15.8337 23.3333C11.6837 23.3333 8.3337 19.9833 8.3337 15.8333C8.3337 11.6833 11.6837 8.33333 15.8337 8.33333C19.9837 8.33333 23.3337 11.6833 23.3337 15.8333C23.3337 19.9833 19.9837 23.3333 15.8337 23.3333Z" />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 40 40"
+                stroke="white"
+                strokeWidth="2"
+              >
+                <path d="M25.8337 23.3333H24.517L24.0504 22.8833C25.6837 20.9833 26.667 18.5167 26.667 15.8333C26.667 9.85 21.817 5 15.8337 5C9.85037 5 5.00037 9.85 5.00037 15.8333C5.00037 21.8167 9.85037 26.6667 15.8337 26.6667C18.517 26.6667 20.9837 25.6833 22.8837 24.05L23.3337 24.5167V25.8333L31.667 34.15L34.1504 31.6667L25.8337 23.3333ZM15.8337 23.3333C11.6837 23.3333 8.3337 19.9833 8.3337 15.8333C8.3337 11.6833 11.6837 8.33333 15.8337 8.33333C19.9837 8.33333 23.3337 11.6833 23.3337 15.8333C23.3337 19.9833 19.9837 23.3333 15.8337 23.3333Z" />
+              </svg>
+            </button>
+          </Link>
+
         </div>
       </form>
 
