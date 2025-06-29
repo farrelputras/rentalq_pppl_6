@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email address</label>
+              <label className="block text-m font-medium text-black"><b>Email address</b></label>
               <input
                 type="email"
                 required
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
 
             {/* New Password */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700">New Password</label>
+              <label className="block text-m font-medium text-black"><b>New Password</b></label>
               <input
                 type={showNew ? 'text' : 'password'}
                 required
@@ -98,7 +98,7 @@ export default function ForgotPasswordPage() {
 
             {/* Confirm Password */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <label className="block text-m font-medium text-black"><b>Confirm Password</b></label>
               <input
                 type={showConfirm ? 'text' : 'password'}
                 required
@@ -120,7 +120,7 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="w-full rounded-full bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
+              className="w-full rounded-xl bg-blue-600 py-3 text-white font-medium hover:bg-blue-700 transition"
             >
               Reset Password
             </button>
