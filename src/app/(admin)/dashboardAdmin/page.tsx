@@ -51,7 +51,15 @@ export default function AdminDashboard() {
               {renderData.map((item, index) => (
                 <tr key={index} className="border-t">
                   <td className="px-6 py-3 whitespace-nowrap">{item.id}</td>
-                  <td className="px-6 py-3 whitespace-nowrap">{item.tanggalSewa}</td>
+                  <td className="px-6 py-3 whitespace-nowrap">
+                    {item.tanggalSewa !== '...'
+                      ? new Date(item.tanggalSewa).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })
+                      : '...'}
+                  </td>
                   <td className="px-6 py-3 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium
