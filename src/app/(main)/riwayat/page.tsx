@@ -21,7 +21,9 @@ interface Booking {
 
 export default function RiwayatPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'Semua' | 'Selesai' | 'Dibatalkan' | 'Diproses' | 'Menunggu Konfirmasi' | 'Dikonfirmasi'>('Semua');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
@@ -39,24 +41,17 @@ export default function RiwayatPage() {
 
   const getStatusClass = (status: Booking['status']) => {
     switch (status) {
-      case 'Selesai':
-        return 'bg-green-200 text-green-800';
-      case 'Diproses':
-        return 'bg-blue-500 text-white';
-      case 'Dibatalkan':
-        return 'bg-red-100 text-red-700';
-      case 'Menunggu Konfirmasi':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'Dikonfirmasi':
-        return 'bg-blue-100 text-blue-700';
-      default:
-        return 'bg-gray-200 text-gray-600';
+      case 'Selesai': return 'bg-green-200 text-green-800';
+      case 'Diproses': return 'bg-blue-500 text-white';
+      case 'Dibatalkan': return 'bg-red-100 text-red-700';
+      case 'Menunggu Konfirmasi': return 'bg-yellow-100 text-yellow-800';
+      case 'Dikonfirmasi': return 'bg-blue-100 text-blue-700';
+      default: return 'bg-gray-200 text-gray-600';
     }
   };
 
-  const calculateTotal = (booking: Booking) => {
-    return booking.basicBiaya + booking.pickupBiaya + booking.taxBiaya - booking.promo;
-  };
+  const calculateTotal = (b: Booking) =>
+    b.basicBiaya + b.pickupBiaya + b.taxBiaya - b.promo;
 
   return (
     <div className="p-4 md:p-6 font-[Poppins] min-h-screen w-screen bg-gray-100">
@@ -66,13 +61,32 @@ export default function RiwayatPage() {
           <h2 className="text-lg font-semibold">Rental Motor</h2>
           <p className="text-sm text-gray-500">History of your bookings</p>
         </div>
-        <button className="flex items-center gap-2 text-[#468BF2] text-sm font-medium border border-[#468BF2] px-3 py-1 rounded-md">
+        <button
+          onClick={() => setShowSearch(!showSearch)}
+          className="flex items-center gap-2 text-[#468BF2] text-sm font-medium border border-[#468BF2] px-3 py-1 rounded-md cursor-pointer"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
           </svg>
           Change Search
         </button>
       </div>
+
+      {/* Search Input */}
+      {showSearch && (
+        <div className="mb-4">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') setSearch(searchInput);
+            }}
+            placeholder="Ketik nama motor dan tekan Enter..."
+            className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
+      )}
 
       {/* Filter Status */}
       <div className="flex items-center gap-3 pl-2 mb-6">
@@ -217,7 +231,7 @@ export default function RiwayatPage() {
                   </div>
                   <div className="flex justify-between mt-2">
                     <p className="font-semibold text-sm">Total Price</p>
-                    <p className="text-blue-600 font-bold">Rp{(selectedBooking.basicBiaya + selectedBooking.pickupBiaya + selectedBooking.taxBiaya - selectedBooking.promo).toLocaleString()}</p>
+                    <p className="text-blue-600 font-bold">Rp{calculateTotal(selectedBooking).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
