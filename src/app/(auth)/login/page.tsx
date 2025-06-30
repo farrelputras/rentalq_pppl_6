@@ -38,7 +38,7 @@ export default function LoginPage() {
         localStorage.setItem("email", data.email);
         localStorage.setItem("noTelp", data.noTelp || "");
         localStorage.setItem("fotoUser", data.fotoUser || "");
-        router.push("/admin");
+        router.push("/dashboardAdmin");
       } else {
         localStorage.setItem("role", "user");
         localStorage.setItem("id", data.idUser);
