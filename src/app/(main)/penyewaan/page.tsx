@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/ui/Button";
 import { Card } from "@/ui/Card";
 import { Select, SelectItem } from "@/ui/Select";
-import Link from "next/link";
 import SearchBar from "@/ui/SearchBar";
+import { useSearchParams } from "next/navigation";
 
-type Motor = {
+interface Motor {
   id: number;
   name: string;
   transmission: string;
@@ -15,7 +15,7 @@ type Motor = {
   nopol: string;
   price: number;
   image: string;
-};
+}
 
 const ITEMS_PER_PAGE = 5;
 
@@ -27,6 +27,10 @@ const RentalMotor = () => {
   const [filterTipe, setFilterTipe] = useState<string | undefined>(undefined);
   const [filterCC, setFilterCC] = useState<string | undefined>(undefined);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
+  const [rentalPeriod, setRentalPeriod] = useState<string | null>(null);
+
+  const searchParams = useSearchParams();
+  const idPencarian = searchParams.get("idPencarian");
 
   useEffect(() => {
     setLoading(true);
@@ -41,7 +45,7 @@ const RentalMotor = () => {
       .then((res) => res.json())
       .then((data) => {
         setMotorList(data);
-        setCurrentPage(1); // reset ke halaman pertama
+        setCurrentPage(1);
         setLoading(false);
       })
       .catch((err) => {
@@ -49,6 +53,48 @@ const RentalMotor = () => {
         setLoading(false);
       });
   }, [filterMerk, filterTipe, filterCC, sortBy]);
+
+  useEffect(() => {
+    if (!idPencarian) return;
+
+    fetch(`/api/pencarian?id=${idPencarian}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const start = new Date(data.waktuAmbil);
+        const end = new Date(data.waktuKembali);
+
+        if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+          const durasi = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+          const startLabel = start.toLocaleString("id-ID", {
+            timeZone: "Asia/Jakarta",
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          const endLabel = end.toLocaleString("id-ID", {
+            timeZone: "Asia/Jakarta",
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          setRentalPeriod(`${startLabel} - ${endLabel} (${durasi} hari)`);
+        } else {
+          setRentalPeriod("Durasi tidak valid");
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch pencarian info:", err);
+      });
+  }, [idPencarian]);
 
   const totalPages = Math.ceil(motorList.length / ITEMS_PER_PAGE);
 
@@ -72,29 +118,18 @@ const RentalMotor = () => {
       {/* Filter */}
       <div className="flex flex-wrap gap-x-2 gap-y-1 items-center mb-4 relative z-10">
         <p className="text-md font-bold text-black-500">Filter: </p>
-        <Select
-          placeholder="Merk Motor"
-          value={filterMerk}
-          onChange={setFilterMerk}
-        >
+
+        <Select placeholder="Merk Motor" value={filterMerk} onChange={setFilterMerk}>
           <SelectItem value="Honda">Honda</SelectItem>
           <SelectItem value="Yamaha">Yamaha</SelectItem>
         </Select>
 
-        <Select
-          placeholder="Tipe Motor"
-          value={filterTipe}
-          onChange={setFilterTipe}
-        >
+        <Select placeholder="Tipe Motor" value={filterTipe} onChange={setFilterTipe}>
           <SelectItem value="Matic">Matic</SelectItem>
           <SelectItem value="Manual">Manual</SelectItem>
         </Select>
 
-        <Select
-          placeholder="Jenis Mesin (CC)"
-          value={filterCC}
-          onChange={setFilterCC}
-        >
+        <Select placeholder="Jenis Mesin (CC)" value={filterCC} onChange={setFilterCC}>
           <SelectItem value="110">110cc</SelectItem>
           <SelectItem value="120">120cc</SelectItem>
           <SelectItem value="160">160cc</SelectItem>
@@ -105,7 +140,6 @@ const RentalMotor = () => {
           <SelectItem value="Highest Price">Highest Price</SelectItem>
         </Select>
 
-        {/* Tambahkan Button reset filter di sini */}
         <Button
           variant="outline"
           className="text-sm ml-auto text-red-600 border-red-600 hover:bg-red-100 rounded-full"
@@ -124,16 +158,11 @@ const RentalMotor = () => {
       {loading ? (
         <p className="text-gray-500 text-center mt-10">Loading motors...</p>
       ) : motorList.length === 0 ? (
-          <p className="text-gray-600 text-center mt-10 font-semibold">
-        Motor tidak tersedia.
-      </p>
+        <p className="text-gray-600 text-center mt-10 font-semibold">Motor tidak tersedia.</p>
       ) : (
         <div className="space-y-4">
           {paginatedMotors.map((motor) => (
-            <Card
-              key={motor.id}
-              className="flex items-center justify-between p-4"
-            >
+            <Card key={motor.id} className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
                 <img
                   src={motor.image}
@@ -155,16 +184,25 @@ const RentalMotor = () => {
                   Rp{motor.price.toLocaleString()}
                   <span className="text-sm text-gray-500"> /day</span>
                 </p>
-                <Link href={`/penyewaan/${motor.id}`}>
-                  <Button className="mt-2">Pilih</Button>
-                </Link>
+                <Button
+                  className="mt-2"
+                  onClick={() => {
+                    if (!idPencarian) {
+                      alert("SILAHKAN INPUT DURASI SEWA KENDARAAN DAHULU DI HOMEPAGE");
+                    } else {
+                      window.location.href = `/penyewaan/${motor.id}?idPencarian=${idPencarian}`;
+                    }
+                  }}
+                >
+                  Pilih
+                </Button>
               </div>
             </Card>
           ))}
         </div>
-      ) }
+      )}
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {!loading && totalPages > 1 && (
         <div className="flex justify-center items-center mt-6 gap-4">
           <button
@@ -182,7 +220,7 @@ const RentalMotor = () => {
             disabled={currentPage === totalPages}
             className="cursor-pointer text-blue-500 disabled:text-gray-300"
           >
-            ▶
+            ▶ 
           </button>
         </div>
       )}

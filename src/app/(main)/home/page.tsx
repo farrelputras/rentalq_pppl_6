@@ -2,14 +2,43 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/ui/Card";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const [motorType, setMotorType] = useState("");
   const [pickupDate, setPickupDate] = useState("");
   const [pickupTime, setPickupTime] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [returnTime, setReturnTime] = useState("");
+
+  const router = useRouter();
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const waktuAmbil = `${pickupDate} ${pickupTime}`;
+    const waktuKembali = `${returnDate} ${returnTime}`;
+
+    if (
+      isNaN(new Date(waktuAmbil).getTime()) ||
+      isNaN(new Date(waktuKembali).getTime())
+    ) {
+      alert("Input waktu tidak valid");
+      return;
+    }
+
+    const res = await fetch("/api/pencarian", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idUser: 1, waktuAmbil, waktuKembali }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      router.push(`/penyewaan?idPencarian=${data.id}`);
+    } else {
+      alert("Gagal menyimpan pencarian");
+    }
+  };
 
   const testimonials = {
     Alka: "Bookingnya gampang, motor datang tepat waktu. Helm bersih, motor irit, dan ngga rewel. Worth it banget buat liburan singkat 👍👍",
@@ -20,10 +49,9 @@ export default function HomePage() {
 
   return (
     <div className="px-4 py-8 min-h-screen">
-      {/* Banner */}
       <div className="w-full mb-8">
         <Image
-          src="\images\homepage\bannerhomepage.svg"
+          src="/images/homepage/bannerhomepage.svg"
           alt="Banner Promo"
           width={1200}
           height={400}
@@ -31,114 +59,74 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Form Input (flex-1 agar masing-masing input melebar proporsional) */}
-      <form className="bg-white p-6 rounded-xl shadow-md mb-6">
-        <div className="flex items-end gap-4">
-          {/* Tipe Motor */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
-              Tipe Motor
-            </label>
-            <select
-              className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
-              value={motorType}
-              onChange={(e) => setMotorType(e.target.value)}
+      <form
+        className="bg-white p-6 rounded-xl shadow-md mb-6"
+        onSubmit={handleSearch}
+      >
+        <div className="flex items-end gap-4 flex-wrap">
+          {/* Input tanggal & waktu */}
+          {[
+            {
+              label: "Tanggal Sewa",
+              type: "date",
+              value: pickupDate,
+              onChange: setPickupDate,
+            },
+            {
+              label: "Waktu Pengambilan (WIB)",
+              type: "time",
+              value: pickupTime,
+              onChange: setPickupTime,
+            },
+            {
+              label: "Tanggal Selesai Sewa",
+              type: "date",
+              value: returnDate,
+              onChange: setReturnDate,
+            },
+            {
+              label: "Waktu Pengembalian (WIB)",
+              type: "time",
+              value: returnTime,
+              onChange: setReturnTime,
+            },
+          ].map((item, i) => (
+            <div key={i} className="flex-1 min-w-[200px]">
+              <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
+                {item.label}
+              </label>
+              <input
+                type={item.type}
+                value={item.value}
+                onChange={(e) => item.onChange(e.target.value)}
+                className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
+              />
+            </div>
+          ))}
+
+          {/* Button search */}
+          <button
+            type="submit"
+            className="cursor-pointer flex-none w-12 h-12 rounded bg-blue-600 flex items-center justify-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 40 40"
+              stroke="white"
+              strokeWidth="2"
             >
-              <option value="">Select Here</option>
-              <option value="All Type">All Type</option>
-              <option value="Honda">Honda</option>
-              <option value="Yamaha">Yamaha</option>
-            </select>
-          </div>
-
-          {/* Tanggal Sewa */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
-              Tanggal Sewa
-            </label>
-            <input
-              type="date"
-              className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
-              value={pickupDate}
-              onChange={(e) => setPickupDate(e.target.value)}
-            />
-          </div>
-
-          {/* Waktu Pengambilan */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
-              Waktu Pengambilan (WIB)
-            </label>
-            <input
-              type="time"
-              className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
-              value={pickupTime}
-              onChange={(e) => setPickupTime(e.target.value)}
-            />
-          </div>
-
-          {/* Tanggal Selesai Sewa */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
-              Tanggal Selesai Sewa
-            </label>
-            <input
-              type="date"
-              className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
-              value={returnDate}
-              onChange={(e) => setReturnDate(e.target.value)}
-            />
-          </div>
-
-          {/* Waktu Pengembalian */}
-          <div className="flex-1 min-w-[200px]">
-            <label className="block mb-1 text-[#0C59B3] text-xs font-normal">
-              Waktu Pengembalian (WIB)
-            </label>
-            <input
-              type="time"
-              className="w-full h-12 px-3 rounded border border-gray-300 bg-white text-base outline-none"
-              value={returnTime}
-              onChange={(e) => setReturnTime(e.target.value)}
-            />
-          </div>
-
-          <Link href="/penyewaan">
-            {/* Tombol Search */}
-            <button
-              className="cursor-pointer flex-none w-12 h-12 rounded bg-blue-600 flex items-center justify-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 40 40"
-                stroke="white"
-                strokeWidth="2"
-              >
-                <path d="M25.8337 23.3333H24.517L24.0504 22.8833C25.6837 20.9833 26.667 18.5167 26.667 15.8333C26.667 9.85 21.817 5 15.8337 5C9.85037 5 5.00037 9.85 5.00037 15.8333C5.00037 21.8167 9.85037 26.6667 15.8337 26.6667C18.517 26.6667 20.9837 25.6833 22.8837 24.05L23.3337 24.5167V25.8333L31.667 34.15L34.1504 31.6667L25.8337 23.3333ZM15.8337 23.3333C11.6837 23.3333 8.3337 19.9833 8.3337 15.8333C8.3337 11.6833 11.6837 8.33333 15.8337 8.33333C19.9837 8.33333 23.3337 11.6833 23.3337 15.8333C23.3337 19.9833 19.9837 23.3333 15.8337 23.3333Z" />
-              </svg>
-            </button>
-          </Link>
-
+              <path d="M25.8337 23.3333H24.517L24.0504 22.8833C25.6837 20.9833 26.667 18.5167 26.667 15.8333C26.667 9.85 21.817 5 15.8337 5C9.85037 5 5.00037 9.85 5.00037 15.8333C5.00037 21.8167 9.85037 26.6667 15.8337 26.6667C18.517 26.6667 20.9837 25.6833 22.8837 24.05L23.3337 24.5167V25.8333L31.667 34.15L34.1504 31.6667L25.8337 23.3333ZM15.8337 23.3333C11.6837 23.3333 8.3337 19.9833 8.3337 15.8333C8.3337 11.6833 11.6837 8.33333 15.8337 8.33333C19.9837 8.33333 23.3337 11.6833 23.3337 15.8333C23.3337 19.9833 19.9837 23.3333 15.8337 23.3333Z" />
+            </svg>
+          </button>
         </div>
       </form>
 
-      {/* Apa Kata Mereka */}
+      {/* Testimoni */}
       <div>
-        <h2
-          className="mb-4 justify-items-center"
-          style={{
-            color: "#0C59B3",
-            fontFamily: "Poppins",
-            fontSize: "30px",
-            fontWeight: 700,
-            lineHeight: "normal",
-          }}
-        >
-          Apa Kata Mereka?
-        </h2>
+        <h2 className="mb-4 text-[#0C59B3] font-bold text-2xl">Apa Kata Mereka?</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
           {(["Alka", "Dia", "Lily", "Yere"] as const).map((name) => (
             <Card
@@ -171,14 +159,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Teks dan Logo di bawah */}
       <div className="flex items-center justify-center mt-6">
         <p className="text-[#0C59B3] font-semibold text-xl mr-2">
           Tunggu apalagi? Gunakan
         </p>
         <Image
-          src="\icons\rentalq-logo-nyamping.svg"
-          alt="RentalQ Logo Blue"
+          src="/icons/rentalq-logo-nyamping.svg"
+          alt="RentalQ Logo"
           width={120}
           height={120}
           className="mr-2"

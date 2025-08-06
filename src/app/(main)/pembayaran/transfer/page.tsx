@@ -19,18 +19,18 @@ interface Pesanan {
 export default function BayarTransfer() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = searchParams.get("id");
+  const id = searchParams?.get("id") ?? "";
 
   const [pesanan, setPesanan] = useState<Pesanan | null>(null);
   const [loading, setLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("Ongoing");
+  const [bukti, setBukti] = useState<File | null>(null);
 
   useEffect(() => {
     const fetchPesanan = async () => {
       try {
         const res = await fetch(`/api/pesanan?id=${id}`);
-        if (!res.ok) throw new Error("Failed to fetch pesanan");
         const data = await res.json();
         setPesanan(data[0]);
       } catch (err) {
@@ -43,156 +43,104 @@ export default function BayarTransfer() {
     if (id) fetchPesanan();
   }, [id]);
 
+  const handleUpload = async () => {
+    if (!bukti || !id) return alert("Pilih file bukti pembayaran terlebih dahulu.");
+    setIsUploading(true);
+
+    const formData = new FormData();
+    formData.append("bukti", bukti);
+    formData.append("id", id);
+
+    try {
+      const res = await fetch("/api/pembayaran", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        setPaymentStatus("Finished");
+      } else {
+        alert("Upload gagal: " + result.message);
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat upload.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   if (loading) return <div className="p-4">Loading...</div>;
-  if (!pesanan)
-    return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
+  if (!pesanan) return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
 
   return (
-    <div className="relative">
-      {isUploading && (
-        <div className="absolute inset-0 bg-[rgba(255,255,255,0.8)] z-[9999] flex items-center justify-center mt-10 w-full mx-auto mb-8 rounded-xl">
-          <p className="text-xl font-semibold text-gray-700 animate-pulse">
-            Uploading...
-          </p>
-        </div>
-      )}
-      {/* Card */}
-      <Card className="w-full rounded-xl bg-white mt-10 w-full mx-auto mb-8 px-10">
+    <main className="mt-10 px-4">
+      <Card className="w-full rounded-xl bg-white mx-auto p-6">
         <CardContent>
-          <h1 className="text-2xl font-semibold mt-4 mb-8 text-black text-center">
-            Please Transfer to the Bank Account Number Below
-          </h1>
-          {/* Left Side */}
-          <div className="grid grid-cols-1 md:grid-cols-[4fr_11fr] gap-8">
-            <Card className="rounded-lg px-2">
-              <CardContent>
-                <h1 className="text-xl font-semibold">Transfer to:</h1>
-                <hr className="mt-3 mb-3 border-gray-300" />
-                <div className="flex gap-2 items-center mb-2">
-                  <Image
-                    src="/bank_logo.png"
-                    alt="Logo Bank"
-                    width={80}
-                    height={80}
-                  />
-                  <div>
-                    <h1 className="text-xl font-semibold">Piggy Bank</h1>
-                    <h1 className="text-lg font-medium">
-                      PT. RentalQ Indonesia
-                    </h1>
-                  </div>
-                </div>
-                <p className="text-gray-500 font-semibold mb-0.5">
-                  Bank Account Number
-                </p>
-                <h1 className="text-xl font-semibold">127836189231893719</h1>
-              </CardContent>
-            </Card>
+          <h1 className="text-2xl font-bold text-center mb-6">Bank Transfer</h1>
 
-            {/* Right Side */}
-            <div className="flex-1 flex flex-col gap-4">
-              {/* Price Details */}
-              <Card className="rounded-lg px-2">
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6">
+            <div className="flex flex-col items-center">
+              <Image src="/bank_logo.png" alt="Bank Logo" width={120} height={120} />
+              <h2 className="text-xl font-semibold mt-4">Piggy Bank</h2>
+              <p className="text-gray-600">PT. RentalQ Indonesia</p>
+              <p className="mt-2 text-sm text-gray-500">Account Number</p>
+              <p className="text-lg font-bold">127836189231893719</p>
+            </div>
+
+            <div className="space-y-4">
+              <Card className="px-2">
                 <CardContent>
-                  <h1 className="text-xl font-semibold">Price Details</h1>
-                  <hr className="mt-3 mb-3 border-gray-300" />
-                  <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                    <span>Basic Rental</span>
-                    <span>Rp {pesanan.basicBiaya.toLocaleString()}</span>
-                  </p>
-                  <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                    <span>Pick-up in other location</span>
-                    <span>Rp {pesanan.pickupBiaya.toLocaleString()}</span>
-                  </p>
-                  <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                    <span>Taxes & fees</span>
-                    <span>Rp {pesanan.taxBiaya.toLocaleString()}</span>
-                  </p>
-                  <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                    <span>Promo used (CODE: RENTQUE)</span>
-                    <span className="text-green-600">
-                      - Rp {pesanan.promo.toLocaleString()}
-                    </span>
-                  </p>
-                  <hr className="mt-3 mb-3 border-gray-300" />
-                  <p className="flex justify-between text-gray-500 text-lg font-bold mb-1">
-                    <span>Total Price</span>
-                    <span className="text-blue-600">
-                      Rp {pesanan.totalBiaya.toLocaleString()}
-                    </span>
-                  </p>
+                  <h2 className="text-xl font-semibold">Price Details</h2>
+                  <hr className="my-3" />
+                  <div className="text-gray-600 space-y-1">
+                    <p className="flex justify-between"><span>Basic Rental</span> <span>Rp {pesanan.basicBiaya.toLocaleString()}</span></p>
+                    <p className="flex justify-between"><span>Pickup Fee</span> <span>Rp {pesanan.pickupBiaya.toLocaleString()}</span></p>
+                    <p className="flex justify-between"><span>Taxes & Fees</span> <span>Rp {pesanan.taxBiaya.toLocaleString()}</span></p>
+                    <p className="flex justify-between text-green-600"><span>Promo</span> <span>- Rp {pesanan.promo.toLocaleString()}</span></p>
+                    <hr className="my-2" />
+                    <p className="flex justify-between font-bold text-blue-600"><span>Total</span> <span>Rp {pesanan.totalBiaya.toLocaleString()}</span></p>
+                  </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
 
-          {/* Payment Status */}
-          <div>
-            <Card className="rounded-lg mt-6 px-2">
-              <CardContent>
-                <h1 className="text-xl font-semibold">Payment Status</h1>
-                <hr className="mt-3 mb-3 border-gray-300" />
-                <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                  <span>Created on</span>
-                  <span>10:00:00 17-04-2025</span>
-                </p>
-                <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                  <span>Expiry </span>
-                  <span>22:00:00 17-04-2025</span>
-                </p>
-                <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                  <span>Taxes & fees</span>
-                  <span>Rp. 0</span>
-                </p>
-                <p className="flex justify-between text-gray-500 font-semibold mb-1">
-                  <span>Status</span>
-                  <span
-                    className={
-                      paymentStatus === "Finished"
-                        ? "text-green-600 font-bold"
-                        : "text-blue-600 font-semibold"
-                    }
-                  >
-                    {paymentStatus}
-                  </span>
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="px-2">
+                <CardContent>
+                  <h2 className="text-xl font-semibold">Payment Status</h2>
+                  <hr className="my-3" />
+                  <p className="flex justify-between mb-3">
+                    <span>Status</span>
+                    <span className={paymentStatus === "Finished" ? "text-green-600 font-bold" : "text-blue-600"}>{paymentStatus}</span>
+                  </p>
 
-            {/* Button Upload & Back */}
-            <div className="flex justify-end">
-              <div className="flex flex-col sm:flex-row mt-4 gap-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setBukti(e.target.files?.[0] ?? null)}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 
+                      file:rounded-full file:border-0 file:text-sm file:font-semibold 
+                      file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                </CardContent>
+              </Card>
+
+              <div className="flex flex-col sm:flex-row justify-end gap-3">
                 <Button
-                  className="w-full sm:w-auto text-white font-bold cursor-pointer"
+                  className="text-white font-bold"
                   style={{ backgroundColor: "#00AA5B" }}
                   disabled={isUploading}
-                  onClick={() => {
-                    setIsUploading(true);
-                    setTimeout(() => {
-                      setPaymentStatus("Finished");
-                      setIsUploading(false);
-                    }, 3000);
-                  }}
+                  onClick={handleUpload}
                 >
                   {isUploading ? "Uploading..." : "Upload Bukti Pembayaran"}
                 </Button>
-
                 <Link href="/penyewaan">
-                  <Button
-                    className="w-full sm:w-auto text-white font-bold cursor-pointer"
-                    style={{ backgroundColor: "#468BF2" }}
-                    onClick={() => {
-                      router.push("/penyewaan");
-                    }}
-                  >
-                    Back to Home
-                  </Button>
+                  <Button className="bg-blue-500 text-white font-bold">Back to Home</Button>
                 </Link>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }

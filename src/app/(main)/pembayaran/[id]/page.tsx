@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import SearchBar from "@/ui/SearchBar";
 import { Card, CardContent } from "@/ui/Card";
@@ -26,49 +26,62 @@ interface Pesanan {
   taxBiaya: number;
   promo: number;
   totalBiaya: number;
+  idPencarian: number;
 }
 
 export default function OrderDetailPage() {
-  const rentalPeriod = {
-    start: "Thursday, 17 April 2025 10:00 WIB",
-    end: "Sunday, 20 April 2025 10:00 WIB",
-    days: 2,
-  };
-
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const urlPencarian = searchParams.get("idPencarian");
 
   const [pesanan, setPesanan] = useState<Pesanan | null>(null);
   const [selected, setSelected] = useState("");
   const [loading, setLoading] = useState(true);
+  const [idPencarian, setIdPencarian] = useState<string | null>(urlPencarian);
+  const [durasiHari, setDurasiHari] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchPesanan = async () => {
-      try {
-        const res = await fetch(`/api/pesanan?id=${id}`);
-        if (!res.ok) throw new Error("Gagal fetch");
-        const data = await res.json();
-        setPesanan(data[0]);
-      } catch (err) {
-        console.error("Error:", err);
-      } finally {
-        setLoading(false);
+useEffect(() => {
+  const fetchPesanan = async () => {
+    try {
+      const res = await fetch(`/api/pesanan?id=${id}`);
+      const data = await res.json();
+      const result = data[0];
+
+      setPesanan(result);
+
+      if (!idPencarian && result?.idPencarian) {
+        setIdPencarian(String(result.idPencarian));
       }
-    };
 
-    if (id) fetchPesanan();
-  }, [id]);
+      // ✅ Parsing waktu manual
+      const [startHour, startMinute] = result.startTime.split(":");
+      const [endHour, endMinute] = result.endTime.split(":");
+
+      const startDate = new Date(result.tanggalSewa);
+      startDate.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
+
+      const endDate = new Date(result.tanggalKembali);
+      endDate.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
+
+      const selisih = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      setDurasiHari(selisih);
+    } catch (err) {
+      console.error("Error fetching pesanan:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (id) fetchPesanan();
+}, [id]);
+
 
   if (loading) return <div className="p-4">Loading...</div>;
-  if (!pesanan)
-    return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
+  if (!pesanan) return <div className="p-4 text-red-500">Pesanan tidak ditemukan.</div>;
 
   const options = [
     { label: "QRIS", value: "qris", icon: "/icons/qris-icon.svg" },
-    {
-      label: "Bank Transfer",
-      value: "transfer",
-      icon: "/icons/transfer-icon.svg",
-    },
+    { label: "Bank Transfer", value: "transfer", icon: "/icons/transfer-icon.svg" },
   ];
 
   return (
@@ -99,15 +112,10 @@ export default function OrderDetailPage() {
           <Card className="rounded-lg px-2 my-4">
             <CardContent>
               <p className="flex justify-between text-lg font-semibold">
-                <span>Rental Duration</span>
-                <span style={{ color: "#468BF2" }}>
-                  {rentalPeriod.days} Day(s)
+                <span>Durasi Sewa</span>
+                <span className="text-blue-600 select-none cursor-default outline-none" tabIndex={-1}>
+                  {durasiHari !== null ? `${durasiHari} hari` : "-"}
                 </span>
-              </p>
-              <hr className="my-3 border-gray-300" />
-              <p className="flex justify-between text-gray-500 font-medium">
-                <span>{rentalPeriod.start}</span>
-                <span>{rentalPeriod.end}</span>
               </p>
             </CardContent>
           </Card>
@@ -130,10 +138,8 @@ export default function OrderDetailPage() {
                 <span>Rp {pesanan.taxBiaya.toLocaleString()}</span>
               </p>
               <p className="flex justify-between text-gray-500 font-semibold">
-                <span>Promo used (RENTQUE)</span>
-                <span className="text-green-600">
-                  - Rp {pesanan.taxBiaya.toLocaleString()}
-                </span>
+                <span>Promo used</span>
+                <span className="text-green-600">- Rp {pesanan.promo.toLocaleString()}</span>
               </p>
               <hr className="my-3 border-gray-300" />
               <p className="flex justify-between text-lg font-bold text-blue-600">
@@ -144,18 +150,16 @@ export default function OrderDetailPage() {
           </Card>
         </div>
 
-        {/* Metode Pembayaran */}
+        {/* METODE PEMBAYARAN */}
         <Card className="rounded-lg px-2">
           <CardContent>
-            <h1 className="text-xl font-semibold">Choose Payment Method</h1>
+            <h1 className="text-xl font-semibold">Pilih Metode Pembayaran</h1>
             <hr className="my-3 border-gray-300" />
-            <Radio
-              options={options}
-              selected={selected}
-              onChange={setSelected}
-            />
+            <Radio options={options} selected={selected} onChange={setSelected} />
             <Link
-              href={`/pembayaran/${selected}?id=${id}`}
+              href={`/pembayaran/${selected}?id=${id}${
+                idPencarian ? `&idPencarian=${idPencarian}` : ""
+              }`}
               className="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition text-center block"
             >
               Bayar
